@@ -100,7 +100,7 @@ src/
 
    ```
    PORT=8000
-   DATABASE_URL=postgres://username:password@localhost:5432/mobilegear
+   DB_URL=postgres://username:password@localhost:5432/mobilegear
    JWT_SECRET=your_jwt_secret
    STRIPE_SECRET_KEY=your_stripe_secret_key
    PAYPAL_CLIENT_ID=your_paypal_client_id

@@ -1,5 +1,5 @@
 import { Op, Transaction, WhereOptions } from "sequelize";
-import { Order, OrderItem } from "../models";
+import { Order, CartItem } from "../models";
 import { OrderQuery } from "../interfaces/order";
 
 const getAll = async (options: OrderQuery = {}) => {
@@ -45,7 +45,7 @@ const getAll = async (options: OrderQuery = {}) => {
 
   const { count, rows: orders } = await Order.findAndCountAll({
     where,
-    include: [{ model: OrderItem, as: "items" }],
+    include: [{ model: CartItem, as: "items" }],
     limit: itemsPerPage,
     offset: offset,
     order: [[validSortBy, validSortOrder]],
@@ -73,14 +73,14 @@ const getOne = async (options: OrderQuery) => {
 
   const order = await Order.findOne({
     where,
-    include: [{ model: OrderItem, as: "items" }],
+    include: [{ model: CartItem, as: "items" }],
   });
   return order;
 };
 
 const getOneById = async (id: number, transaction?: Transaction) => {
   const order = await Order.findByPk(id, {
-    include: [{ model: OrderItem, as: "items" }],
+    include: [{ model: CartItem, as: "items" }],
     transaction,
   });
   return order;

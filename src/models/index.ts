@@ -1,7 +1,7 @@
 import Order from "./Order";
 import Product from "./Product";
 import User from "./User";
-import OrderItem from "./OrderItem";
+import CartItem from "./CartItem";
 
 User.hasMany(Order, {
   foreignKey: "userId",
@@ -11,21 +11,21 @@ Order.belongsTo(User, {
   foreignKey: "userId",
 });
 
-Product.hasMany(OrderItem, {
+Product.hasMany(CartItem, {
   foreignKey: "productId",
 });
 
-OrderItem.belongsTo(Product, {
+CartItem.belongsTo(Product, {
   foreignKey: "productId",
 });
 
-Order.hasMany(OrderItem, {
+Order.hasMany(CartItem, {
   foreignKey: "orderId",
   as: "items",
 });
 
-OrderItem.belongsTo(Order, {
+CartItem.belongsTo(Order, {
   foreignKey: "orderId",
 });
 
-export { User, Product, Order, OrderItem };
+export { User, Product, Order, CartItem };

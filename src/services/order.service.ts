@@ -1,7 +1,7 @@
 import { BadRequestError, NotFoundError } from "../utils/errors";
 import productRepository from "../repositories/product.repository";
 import orderRepository from "../repositories/order.repository";
-import orderItemsRepository from "../repositories/order-item.repository";
+import cartItemsRepository from "../repositories/order-item.repository";
 import transactionsRepository from "../repositories/transaction.repository";
 import { CreateOrderData, OrderQuery } from "../interfaces/order";
 
@@ -34,7 +34,7 @@ const createOrder = async (orderData: CreateOrderData) => {
           `Insufficient stock for product ${item.productId}`,
         );
 
-      await orderItemsRepository.createOne(
+      await cartItemsRepository.createOne(
         {
           orderId: order.id,
           productId: item.productId,

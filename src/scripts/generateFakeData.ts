@@ -2,14 +2,14 @@ import bcrypt from "bcryptjs";
 import User from "../models/User";
 import Product from "../models/Product";
 import Order from "../models/Order";
-import OrderItem from "../models/OrderItem";
+import CartItem from "../models/CartItem";
 import sequelize from "../db/database";
 import path from "path";
 import fs from "fs";
 import { CreationAttributes } from "sequelize";
 
 type OrderCreationAttributes = CreationAttributes<Order>;
-type OrderItemCreationAttributes = CreationAttributes<OrderItem>;
+type CartItemCreationAttributes = CreationAttributes<CartItem>;
 
 const generateUsers = async () => {
   const users = [
@@ -53,10 +53,10 @@ const generateOrders = (
   productIds: number[],
 ): {
   orders: OrderCreationAttributes[];
-  orderItems: OrderItemCreationAttributes[];
+  cartItems: CartItemCreationAttributes[];
 } => {
   const orders: OrderCreationAttributes[] = [];
-  const orderItems: OrderItemCreationAttributes[] = [];
+  const cartItems: CartItemCreationAttributes[] = [];
 
   userIds.forEach((userId) => {
     for (let i = 0; i < 3; i++) {
@@ -71,7 +71,7 @@ const generateOrders = (
         const price = Math.floor(Math.random() * 900) + 100;
         total += price * quantity;
 
-        orderItems.push({
+        cartItems.push({
           orderId,
           productId,
           quantity,
@@ -95,7 +95,7 @@ const generateOrders = (
     }
   });
 
-  return { orders, orderItems };
+  return { orders, cartItems };
 };
 
 export const generateFakeData = async () => {
@@ -103,7 +103,7 @@ export const generateFakeData = async () => {
     await sequelize.sync({ force: true });
 
     await sequelize.query(
-      "TRUNCATE users, products, orders, order_items CASCADE",
+      "TRUNCATE users, products, orders, cart_items CASCADE",
     );
 
     const users = await generateUsers();
@@ -115,9 +115,9 @@ export const generateFakeData = async () => {
     const userIds = createdUsers.map((user) => user.id);
     const productIds = createdProducts.map((product) => product.id);
 
-    const { orders, orderItems } = generateOrders(userIds, productIds);
+    const { orders, cartItems } = generateOrders(userIds, productIds);
     await Order.bulkCreate(orders);
-    await OrderItem.bulkCreate(orderItems);
+    await CartItem.bulkCreate(cartItems);
 
     console.log("Fake data generated successfully!");
   } catch (error) {

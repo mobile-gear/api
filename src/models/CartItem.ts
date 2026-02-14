@@ -1,7 +1,7 @@
 import { Model, DataTypes } from "sequelize";
 import db from "../db/database";
 
-class OrderItem extends Model {
+class CartItem extends Model {
   public id!: number;
   public orderId!: number;
   public productId!: number;
@@ -11,7 +11,7 @@ class OrderItem extends Model {
   public readonly updatedAt!: Date;
 }
 
-OrderItem.init(
+CartItem.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -45,11 +45,11 @@ OrderItem.init(
   },
   {
     sequelize: db,
-    modelName: "OrderItem",
-    tableName: "order_items",
+    modelName: "CartItem",
+    tableName: "cart_items",
     timestamps: true,
     underscored: true,
   },
 );
 
-export default OrderItem;
+export default CartItem;

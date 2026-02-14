@@ -146,7 +146,7 @@ The application uses the following main models:
 - **User**: User accounts with authentication details
 - **Product**: Mobile devices and accessories inventory
 - **Order**: Customer orders
-- **OrderItem**: Individual items within an order
+- **CartItem**: Individual items within an order
 - **Payment**: Payment transaction records
 
 ## Security Considerations

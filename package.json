@@ -7,9 +7,6 @@
     "start": "node dist/server.js",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
-    "test": "NODE_ENV=test jest",
-    "test:watch": "NODE_ENV=test jest --watch",
-    "test:coverage": "NODE_ENV=test jest --coverage",
     "production": "node dist/server.js",
     "generate:data": "ts-node src/scripts/generateFakeData.ts",
     "format": "prettier --write ."

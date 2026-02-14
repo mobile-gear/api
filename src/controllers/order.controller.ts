@@ -5,7 +5,7 @@ import orderService from "../services/order.service";
 export const createOrder = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const orderData = {
@@ -22,7 +22,7 @@ export const createOrder = async (
 export const getAllOrders = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const filters = {
@@ -39,7 +39,7 @@ export const getAllOrders = async (
 export const getUserOrders = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const orders = await orderService.getUserOrders(req.user!.id);
@@ -52,7 +52,7 @@ export const getUserOrders = async (
 export const getOrderById = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const order = await orderService.getOrderById(+req.params.id, req.user!.id);
@@ -65,12 +65,12 @@ export const getOrderById = async (
 export const updateOrderStatus = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const order = await orderService.updateOrderStatus(
       +req.params.id,
-      req.body.status
+      req.body.status,
     );
     res.json(order);
   } catch (error) {

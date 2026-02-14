@@ -18,12 +18,12 @@ const validateCart = async (items: CartItem[]) => {
 
     if (item.quantity <= 0)
       throw new BadRequestError(
-        `Invalid quantity for product ${item.productId}`
+        `Invalid quantity for product ${item.productId}`,
       );
 
     if (product.stock < item.quantity)
       throw new BadRequestError(
-        `Insufficient stock for product ${item.productId}`
+        `Insufficient stock for product ${item.productId}`,
       );
 
     validatedItems.push({
@@ -46,7 +46,7 @@ const createPaymentIntent = async (items: CartItem[]) => {
 
   const paymentIntent = await paymentRepository.createPaymentIntent(
     validatedItems,
-    total
+    total,
   );
 
   return paymentIntent;

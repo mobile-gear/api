@@ -21,12 +21,12 @@ app.use("/.netlify/functions/server/api/products", productRoutes);
 app.use(
   "/.netlify/functions/server/api/orders",
   authenticateToken,
-  orderRoutes
+  orderRoutes,
 );
 app.use(
   "/.netlify/functions/server/api/checkout",
   authenticateToken,
-  checkoutRoutes
+  checkoutRoutes,
 );
 
 export const handler = ServerlessHttp(app);

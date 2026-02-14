@@ -5,7 +5,7 @@ import handleError from "../utils/handleError";
 export const createPaymentIntent = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const result = await checkoutService.createPaymentIntent(req.body.items);

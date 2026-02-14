@@ -27,7 +27,7 @@ export async function resetDatabase() {
 
     const migrationSql = fs.readFileSync(
       path.resolve(__dirname, "../db/migrations/001_initial_schema.sql"),
-      "utf8"
+      "utf8",
     );
 
     if (migrationSql.trim()) {

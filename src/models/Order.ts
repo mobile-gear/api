@@ -67,7 +67,7 @@ Order.init(
     sequelize: db,
     tableName: "orders",
     timestamps: true,
-  }
+  },
 );
 
 export default Order;

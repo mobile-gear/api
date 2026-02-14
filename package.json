@@ -11,7 +11,8 @@
     "test:watch": "NODE_ENV=test jest --watch",
     "test:coverage": "NODE_ENV=test jest --coverage",
     "production": "node dist/server.js",
-    "generate:data": "ts-node src/scripts/generateFakeData.ts"
+    "generate:data": "ts-node src/scripts/generateFakeData.ts",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
@@ -44,6 +45,7 @@
     "@faker-js/faker": "^9.5.0",
     "@types/pg": "^8.11.11",
     "@types/react": "^19.0.10",
-    "@types/supertest": "^6.0.2"
+    "@types/supertest": "^6.0.2",
+    "prettier": "^3.3.3"
   }
 }

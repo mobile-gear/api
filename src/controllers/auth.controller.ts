@@ -5,7 +5,7 @@ import handleError from "../utils/handleError";
 export const register = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const userData = req.body;
@@ -19,7 +19,7 @@ export const register = async (
 export const login = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const { email, password } = req.body;
@@ -33,7 +33,7 @@ export const login = async (
 export const getProfile = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const user = await authService.getProfile(req.user.id);

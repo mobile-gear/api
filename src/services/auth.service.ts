@@ -42,7 +42,7 @@ const login = async (email: string, password: string) => {
   const token = jwt.sign(
     { id: user.id, email: user.email, role: user.role },
     process.env.JWT_SECRET || "fallback_secret",
-    { expiresIn: "2h" }
+    { expiresIn: "2h" },
   );
 
   return { token, user: getUserWithoutPassword(user) };

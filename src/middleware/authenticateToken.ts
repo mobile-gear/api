@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 export default async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
@@ -17,7 +17,7 @@ export default async (
   try {
     const user = jwt.verify(
       token,
-      process.env.JWT_SECRET || "fallback_secret"
+      process.env.JWT_SECRET || "fallback_secret",
     ) as {
       id: number;
       email: string;

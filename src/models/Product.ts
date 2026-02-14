@@ -52,7 +52,7 @@ Product.init(
     tableName: "products",
     timestamps: true,
     underscored: true,
-  }
+  },
 );
 
 export default Product;

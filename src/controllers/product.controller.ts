@@ -5,11 +5,11 @@ import handleError from "../utils/handleError";
 export const getAllProducts = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const { products, pagination } = await productService.getAllProducts(
-      req.query
+      req.query,
     );
     res.json({ products, pagination });
   } catch (error) {
@@ -20,7 +20,7 @@ export const getAllProducts = async (
 export const getProductById = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const product = await productService.getProductById(+req.params.id);
@@ -33,7 +33,7 @@ export const getProductById = async (
 export const createProduct = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const product = await productService.createProduct(req.body);
@@ -46,12 +46,12 @@ export const createProduct = async (
 export const updateProduct = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const product = await productService.updateProduct(
       +req.params.id,
-      req.body
+      req.body,
     );
     res.json(product);
   } catch (error) {
@@ -62,7 +62,7 @@ export const updateProduct = async (
 export const deleteProduct = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     await productService.deleteProduct(+req.params.id);

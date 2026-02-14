@@ -21,12 +21,12 @@ describe("Product Routes", () => {
     adminToken = jwt.sign(
       { id: 1, email: "admin@test.com", role: "admin" },
       process.env.JWT_SECRET || "fallback_secret",
-      { expiresIn: "1h" }
+      { expiresIn: "1h" },
     );
     userToken = jwt.sign(
       { id: 2, email: "user@test.com", role: "user" },
       process.env.JWT_SECRET || "fallback_secret",
-      { expiresIn: "1h" }
+      { expiresIn: "1h" },
     );
   });
 
@@ -47,7 +47,7 @@ describe("Product Routes", () => {
 
       expect(response.statusCode).toBe(200);
       expect(response.body.every((p: any) => p.category === "smartphone")).toBe(
-        true
+        true,
       );
     });
   });

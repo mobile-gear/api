@@ -20,18 +20,18 @@ const createOrder = async (orderData: CreateOrderData) => {
         paymentIntentId,
         shippingAddress,
       },
-      transaction
+      transaction,
     );
 
     for (const item of items) {
       const product = await productRepository.getOneById(
         item.productId,
-        transaction
+        transaction,
       );
 
       if (!product || product.stock < item.quantity)
         throw new BadRequestError(
-          `Insufficient stock for product ${item.productId}`
+          `Insufficient stock for product ${item.productId}`,
         );
 
       await orderItemsRepository.createOne(
@@ -41,13 +41,13 @@ const createOrder = async (orderData: CreateOrderData) => {
           quantity: item.quantity,
           price: item.price,
         },
-        transaction
+        transaction,
       );
 
       await productRepository.updateOneById(
         item.productId,
         { stock: product.stock - item.quantity },
-        transaction
+        transaction,
       );
     }
 

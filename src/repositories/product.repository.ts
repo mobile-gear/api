@@ -74,7 +74,7 @@ const getOneById = async (id: number, transaction?: Transaction) => {
 
 const createOne = async (
   product: Partial<Product>,
-  transaction?: Transaction
+  transaction?: Transaction,
 ) => {
   const newProduct = await Product.create(product, { transaction });
   return newProduct;
@@ -83,7 +83,7 @@ const createOne = async (
 const updateOneById = async (
   id: number,
   product: Partial<Product>,
-  transaction?: Transaction
+  transaction?: Transaction,
 ) => {
   const updatedProduct = await getOneById(id);
   if (!updatedProduct) return null;

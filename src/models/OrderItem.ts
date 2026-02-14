@@ -49,7 +49,7 @@ OrderItem.init(
     tableName: "order_items",
     timestamps: true,
     underscored: true,
-  }
+  },
 );
 
 export default OrderItem;

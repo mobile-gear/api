@@ -50,7 +50,7 @@ const loadProducts = () => {
 
 const generateOrders = (
   userIds: number[],
-  productIds: number[]
+  productIds: number[],
 ): {
   orders: OrderCreationAttributes[];
   orderItems: OrderItemCreationAttributes[];
@@ -103,7 +103,7 @@ export const generateFakeData = async () => {
     await sequelize.sync({ force: true });
 
     await sequelize.query(
-      "TRUNCATE users, products, orders, order_items CASCADE"
+      "TRUNCATE users, products, orders, order_items CASCADE",
     );
 
     const users = await generateUsers();

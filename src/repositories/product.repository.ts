@@ -1,6 +1,7 @@
-import { Op, Transaction, WhereOptions } from "sequelize";
+import { CreationAttributes, Op, Transaction, WhereOptions } from "sequelize";
 import { Product } from "../models";
-import { ProductQuery } from "../interfaces/product";
+import ProductQuery from "../interfaces/query/product";
+import { SortOrder } from "../types/common";
 
 const VALID_SORT_FIELDS = [
   "id",
@@ -10,6 +11,7 @@ const VALID_SORT_FIELDS = [
   "stock",
   "createdAt",
 ] as const;
+
 type SortField = (typeof VALID_SORT_FIELDS)[number];
 
 const getAll = async (options: ProductQuery) => {
@@ -49,7 +51,7 @@ const getAll = async (options: ProductQuery) => {
   if (
     sortBy &&
     VALID_SORT_FIELDS.includes(sortBy as SortField) &&
-    (sortOrder === "asc" || sortOrder === "desc")
+    (sortOrder === SortOrder.ASC || sortOrder === SortOrder.DESC)
   ) {
     order = [[sortBy as string, sortOrder.toUpperCase()]];
   }
@@ -73,7 +75,7 @@ const getOneById = async (id: number, transaction?: Transaction) => {
 };
 
 const createOne = async (
-  product: Partial<Product>,
+  product: CreationAttributes<Product>,
   transaction?: Transaction,
 ) => {
   const newProduct = await Product.create(product, { transaction });
@@ -82,7 +84,7 @@ const createOne = async (
 
 const updateOneById = async (
   id: number,
-  product: Partial<Product>,
+  product: Partial<CreationAttributes<Product>>,
   transaction?: Transaction,
 ) => {
   const updatedProduct = await getOneById(id);

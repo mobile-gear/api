@@ -1,4 +1,4 @@
-export interface CartItem {
+export default interface CartItemDto {
   productId: number;
   quantity: number;
 }

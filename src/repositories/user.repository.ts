@@ -1,5 +1,5 @@
-import { WhereOptions } from "sequelize";
-import { UserQuery } from "../interfaces/user";
+import { CreationAttributes, WhereOptions } from "sequelize";
+import UserQuery from "../interfaces/query/user";
 import { User } from "../models";
 
 const getOne = async (options: UserQuery) => {
@@ -18,7 +18,7 @@ const getOneById = async (id: number) => {
   return user;
 };
 
-const createOne = async (user: Partial<User>): Promise<User> => {
+const createOne = async (user: CreationAttributes<User>): Promise<User> => {
   const newUser = await User.create(user);
   return newUser;
 };

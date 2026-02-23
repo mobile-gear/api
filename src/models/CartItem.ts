@@ -1,14 +1,14 @@
-import { Model, DataTypes } from "sequelize";
+import {
+  DataTypes,
+} from "sequelize";
 import db from "../db/database";
+import BaseModel from "./BaseModel";
 
-class CartItem extends Model {
-  public id!: number;
+class CartItem extends BaseModel<CartItem> {
   public orderId!: number;
   public productId!: number;
   public quantity!: number;
   public price!: number;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
 }
 
 CartItem.init(

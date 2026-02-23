@@ -7,9 +7,7 @@ import sequelize from "../db/database";
 import path from "path";
 import fs from "fs";
 import { CreationAttributes } from "sequelize";
-
-type OrderCreationAttributes = CreationAttributes<Order>;
-type CartItemCreationAttributes = CreationAttributes<CartItem>;
+import ShippingAddress from "../models/ShippingAddress";
 
 const generateUsers = async () => {
   const users = [
@@ -48,15 +46,23 @@ const loadProducts = () => {
   }));
 };
 
-const generateOrders = (
+const generateOrders = async (
   userIds: number[],
   productIds: number[],
-): {
-  orders: OrderCreationAttributes[];
-  cartItems: CartItemCreationAttributes[];
-} => {
-  const orders: OrderCreationAttributes[] = [];
-  const cartItems: CartItemCreationAttributes[] = [];
+): Promise<{
+  orders: CreationAttributes<Order>[];
+  cartItems: CreationAttributes<CartItem>[];
+}> => {
+  const orders: CreationAttributes<Order>[] = [];
+  const cartItems: CreationAttributes<CartItem>[] = [];
+
+  const shippingAddress = await ShippingAddress.create({
+    street: "test street",
+    city: "test city",
+    state: "test state",
+    zipCode: "test zip code",
+    country: "test country",
+  });
 
   userIds.forEach((userId) => {
     for (let i = 0; i < 3; i++) {
@@ -75,7 +81,7 @@ const generateOrders = (
           orderId,
           productId,
           quantity,
-          price,
+          price
         });
       }
 
@@ -84,13 +90,7 @@ const generateOrders = (
         total,
         status: Math.random() > 0.5 ? "completed" : "pending",
         paymentIntentId: "1",
-        shippingAddress: {
-          street: "test street",
-          city: "test city",
-          state: "test state",
-          zipCode: "test zip code",
-          country: "test country",
-        },
+        shippingAddressId: shippingAddress.id,
       });
     }
   });
@@ -103,7 +103,7 @@ export const generateFakeData = async () => {
     await sequelize.sync({ force: true });
 
     await sequelize.query(
-      "TRUNCATE users, products, orders, cart_items CASCADE",
+      "TRUNCATE users, products, orders, cart_items, shipping_addresses CASCADE",
     );
 
     const users = await generateUsers();
@@ -115,7 +115,7 @@ export const generateFakeData = async () => {
     const userIds = createdUsers.map((user) => user.id);
     const productIds = createdProducts.map((product) => product.id);
 
-    const { orders, cartItems } = generateOrders(userIds, productIds);
+    const { orders, cartItems } = await generateOrders(userIds, productIds);
     await Order.bulkCreate(orders);
     await CartItem.bulkCreate(cartItems);
 

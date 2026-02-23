@@ -1,16 +1,16 @@
-import { Model, DataTypes } from "sequelize";
+import {
+  DataTypes,
+} from "sequelize";
 import sequelize from "../db/database";
+import BaseModel from "./BaseModel";
 
-class Product extends Model {
-  public id!: number;
+class Product extends BaseModel<Product> {
   public name!: string;
   public description!: string;
   public price!: number;
   public category!: string;
   public stock!: number;
   public img!: string;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
 }
 
 Product.init(

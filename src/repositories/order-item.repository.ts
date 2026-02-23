@@ -1,8 +1,8 @@
-import { Transaction } from "sequelize";
+import { CreationAttributes, Transaction } from "sequelize";
 import { CartItem } from "../models";
 
 const createOne = async (
-  cartItem: Partial<CartItem>,
+  cartItem: CreationAttributes<CartItem>,
   transaction?: Transaction,
 ) => {
   const newCartItem = await CartItem.create(cartItem, { transaction });

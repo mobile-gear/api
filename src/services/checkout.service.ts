@@ -1,9 +1,9 @@
-import { CartItem } from "../interfaces/cart-item";
+import CartItemDto from "../interfaces/dto/cart-item";
 import paymentRepository from "../repositories/payment.repository";
 import productRepository from "../repositories/product.repository";
 import { BadRequestError } from "../utils/errors";
 
-const validateCart = async (items: CartItem[]) => {
+const validateCart = async (items: CartItemDto[]) => {
   if (!items || !Array.isArray(items))
     throw new BadRequestError("Invalid items array");
 
@@ -41,7 +41,7 @@ const validateCart = async (items: CartItem[]) => {
   };
 };
 
-const createPaymentIntent = async (items: CartItem[]) => {
+const createPaymentIntent = async (items: CartItemDto[]) => {
   const { items: validatedItems, total } = await validateCart(items);
 
   const paymentIntent = await paymentRepository.createPaymentIntent(

@@ -1,6 +1,6 @@
-import { Op, Transaction, WhereOptions } from "sequelize";
+import { CreationAttributes, Op, Transaction, WhereOptions } from "sequelize";
 import { Order, CartItem } from "../models";
-import { OrderQuery } from "../interfaces/order";
+import OrderQuery from "../interfaces/query/order";
 
 const getAll = async (options: OrderQuery = {}) => {
   const {
@@ -41,14 +41,12 @@ const getAll = async (options: OrderQuery = {}) => {
   const allowedSortFields = ["id", "createdAt", "status", "total"];
   const validSortBy = allowedSortFields.includes(sortBy) ? sortBy : "createdAt";
 
-  const validSortOrder = sortOrder?.toLowerCase() === "asc" ? "ASC" : "DESC";
-
   const { count, rows: orders } = await Order.findAndCountAll({
     where,
     include: [{ model: CartItem, as: "items" }],
     limit: itemsPerPage,
     offset: offset,
-    order: [[validSortBy, validSortOrder]],
+    order: [[validSortBy, sortOrder]],
   });
 
   return {
@@ -86,12 +84,18 @@ const getOneById = async (id: number, transaction?: Transaction) => {
   return order;
 };
 
-const createOne = async (order: Partial<Order>, transaction?: Transaction) => {
+const createOne = async (
+  order: CreationAttributes<Order>,
+  transaction?: Transaction,
+) => {
   const newOrder = await Order.create(order, { transaction });
   return newOrder;
 };
 
-const updateOneById = async (id: number, order: Partial<Order>) => {
+const updateOneById = async (
+  id: number,
+  order: Partial<CreationAttributes<Order>>,
+) => {
   const updatedOrder = await getOneById(id);
   if (!updatedOrder) return null;
   await updatedOrder.update(order);

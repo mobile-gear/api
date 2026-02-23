@@ -27,6 +27,7 @@ const register = async (userData: User) => {
     password: hashedPassword,
     firstName,
     lastName,
+    role: "user",
   });
 
   return getUserWithoutPassword(newUser);

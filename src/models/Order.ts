@@ -1,21 +1,15 @@
-import { Model, DataTypes } from "sequelize";
+import {
+  DataTypes,
+} from "sequelize";
 import db from "../db/database";
+import BaseModel from "./BaseModel";
 
-class Order extends Model {
-  public id!: number;
+class Order extends BaseModel<Order> {
   public userId!: number;
   public status!: string;
   public total!: number;
   public paymentIntentId!: string;
-  public shippingAddress!: {
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-    country: string;
-  };
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  public shippingAddressId!: number;
 }
 
 Order.init(
@@ -47,26 +41,21 @@ Order.init(
       allowNull: false,
       field: "payment_intent_id",
     },
-    shippingAddress: {
-      type: DataTypes.JSONB,
+    shippingAddressId: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-      field: "shipping_address",
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      field: "created_at",
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      field: "updated_at",
+      field: "shipping_address_id",
+      references: {
+        model: "shipping_addresses",
+        key: "id",
+      },
     },
   },
   {
     sequelize: db,
     tableName: "orders",
     timestamps: true,
+    underscored: true,
   },
 );
 

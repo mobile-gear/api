@@ -3,13 +3,14 @@ import productRepository from "../repositories/product.repository";
 import orderRepository from "../repositories/order.repository";
 import cartItemsRepository from "../repositories/order-item.repository";
 import transactionsRepository from "../repositories/transaction.repository";
-import { CreateOrderData, OrderQuery } from "../interfaces/order";
+import OrderDto from "../interfaces/dto/order";
+import OrderQuery from "../interfaces/query/order";
 
-const createOrder = async (orderData: CreateOrderData) => {
+const createOrder = async (orderData: OrderDto) => {
   const transaction = await transactionsRepository.createOne();
 
   try {
-    const { items, totalAmount, paymentIntentId, shippingAddress, userId } =
+    const { items, totalAmount, paymentIntentId, shippingAddressId, userId } =
       orderData;
 
     const order = await orderRepository.createOne(
@@ -18,7 +19,7 @@ const createOrder = async (orderData: CreateOrderData) => {
         total: totalAmount,
         status: "completed",
         paymentIntentId,
-        shippingAddress,
+        shippingAddressId,
       },
       transaction,
     );
@@ -29,17 +30,18 @@ const createOrder = async (orderData: CreateOrderData) => {
         transaction,
       );
 
-      if (!product || product.stock < item.quantity)
+      if (!product || product.stock < item.quantity) {
         throw new BadRequestError(
           `Insufficient stock for product ${item.productId}`,
         );
+      }
 
       await cartItemsRepository.createOne(
         {
           orderId: order.id,
           productId: item.productId,
           quantity: item.quantity,
-          price: item.price,
+          price: product.price,
         },
         transaction,
       );

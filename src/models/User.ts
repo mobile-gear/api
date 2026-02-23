@@ -1,15 +1,15 @@
-import { Model, DataTypes } from "sequelize";
+import {
+  DataTypes,
+} from "sequelize";
 import db from "../db/database";
+import BaseModel from "./BaseModel";
 
-class User extends Model {
-  public id!: number;
+class User extends BaseModel<User> {
   public email!: string;
   public password!: string;
   public firstName!: string;
   public lastName!: string;
   public role!: string;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
 }
 
 User.init(
@@ -47,6 +47,7 @@ User.init(
     sequelize: db,
     tableName: "users",
     timestamps: true,
+    underscored: true,
   },
 );
 

@@ -10,11 +10,7 @@ class RedisClient {
     if (!this.enabled) return null;
 
     if (!this.instance) {
-      this.instance = new Redis({
-        host: process.env.REDIS_HOST || "localhost",
-        port: Number(process.env.REDIS_PORT) || 6379,
-        password: process.env.REDIS_PASSWORD || undefined,
-        db: Number(process.env.REDIS_DB) || 0,
+      this.instance = new Redis(process.env.REDIS_URL || "redis://localhost:6379", {
         retryStrategy: (times) => {
           if (times > 3) {
             console.error("Redis retry limit exceeded");

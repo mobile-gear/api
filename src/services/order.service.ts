@@ -6,6 +6,7 @@ import transactionsRepository from "../repositories/transaction.repository";
 import OrderDto from "../interfaces/dto/order";
 import OrderQuery from "../interfaces/query/order";
 import productCache from "../cache/strategies/product.cache";
+import orderCache from "../cache/strategies/order.cache";
 
 const createOrder = async (orderData: OrderDto) => {
   const transaction = await transactionsRepository.createOne();
@@ -14,14 +15,11 @@ const createOrder = async (orderData: OrderDto) => {
     const { items, totalAmount, paymentIntentId, shippingAddressId, userId } =
       orderData;
 
-    // OPTIMIZATION: Batch fetch de productos
     const productIds = items.map((item) => item.productId);
 
-    // Intentar obtener de cache
     const cachedProducts = await productCache.getBulk(productIds);
     const missingIds = productIds.filter((id) => !cachedProducts.has(id));
 
-    // Fetch missing products from DB en una sola query
     let productMap = cachedProducts;
     if (missingIds.length > 0) {
       const dbProducts = await productRepository.getByIds(
@@ -30,7 +28,6 @@ const createOrder = async (orderData: OrderDto) => {
       );
       dbProducts.forEach((product) => productMap.set(product.id, product));
 
-      // Cachear productos recién obtenidos
       const newProductsMap = new Map(dbProducts.map((p) => [p.id, p]));
       await productCache.setBulk(newProductsMap);
     }
@@ -46,7 +43,6 @@ const createOrder = async (orderData: OrderDto) => {
       transaction,
     );
 
-    // Ahora usar productMap en lugar de queries individuales
     for (const item of items) {
       const product = productMap.get(item.productId);
 
@@ -72,12 +68,16 @@ const createOrder = async (orderData: OrderDto) => {
         transaction,
       );
 
-      // Invalidar cache (stock cambió)
       await productCache.invalidateById(item.productId);
     }
 
     await transaction.commit();
-    return orderRepository.getOneById(order.id);
+
+    await orderCache.invalidateUserOrders(userId);
+
+    const createdOrder = await orderRepository.getOneById(order.id);
+    if (createdOrder) await orderCache.setById(order.id, createdOrder);
+    return createdOrder;
   } catch (error) {
     if (transaction) await transaction.rollback();
     throw error;
@@ -85,29 +85,37 @@ const createOrder = async (orderData: OrderDto) => {
 };
 
 const getAllOrders = async (options: OrderQuery) => {
-  const orders = await orderRepository.getAll(options);
-  return orders;
+  return orderRepository.getAll(options);
 };
 
 const getUserOrders = async (userId: number) => {
-  const orders = await orderRepository.getAll({ userId });
-  return orders;
+  const query: OrderQuery = { userId };
+
+  const cached = await orderCache.getList(query);
+  if (cached) return cached;
+
+  const result = await orderRepository.getAll(query);
+  await orderCache.setList(query, result);
+  return result;
 };
 
 const getOrderById = async (orderId: number, userId: number) => {
-  const order = await orderRepository.getOne({
-    id: orderId,
-    userId,
-  });
+  const cached = await orderCache.getById(orderId);
+  if (cached) return cached;
 
+  const order = await orderRepository.getOne({ id: orderId, userId });
   if (!order) throw new NotFoundError("Order not found");
 
+  await orderCache.setById(orderId, order);
   return order;
 };
 
 const updateOrderStatus = async (orderId: number, status: string) => {
   const order = await orderRepository.updateOneById(orderId, { status });
   if (!order) throw new NotFoundError("Order not found");
+
+  await orderCache.invalidateById(orderId);
+  await orderCache.invalidateUserOrders(order.userId);
 
   return order;
 };

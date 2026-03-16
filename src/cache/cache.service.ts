@@ -1,11 +1,12 @@
 import RedisClient from "./redis.client";
 import { ICacheService } from "./interfaces/cache.interface";
+import cacheMetrics from "./cache.metrics";
 
 class CacheService<T> implements ICacheService<T> {
   private redis = RedisClient.getInstance();
   private defaultTTL: number;
 
-  constructor(defaultTTL: number = 3600) {
+  constructor(defaultTTL: number = Number(process.env.REDIS_DEFAULT_TTL) || 3600) {
     this.defaultTTL = defaultTTL;
   }
 
@@ -14,9 +15,14 @@ class CacheService<T> implements ICacheService<T> {
 
     try {
       const cached = await this.redis.get(key);
-      if (!cached) return null;
+      if (!cached) {
+        cacheMetrics.recordMiss();
+        return null;
+      }
+      cacheMetrics.recordHit();
       return JSON.parse(cached) as T;
     } catch (error) {
+      cacheMetrics.recordError();
       console.error("Cache get error:", error);
       return null;
     }
@@ -104,7 +110,6 @@ class CacheService<T> implements ICacheService<T> {
     }
   }
 
-  // Cache-aside pattern helper
   async getOrSet<K>(
     key: string,
     fetcher: () => Promise<K>,

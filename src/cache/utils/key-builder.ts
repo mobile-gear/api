@@ -5,7 +5,7 @@ export class CacheKeyBuilder {
   private env: string;
 
   constructor() {
-    this.env = process.env.NODE_ENV || "dev";
+    this.env = process.env.NODE_ENV || "development";
   }
 
   entity(type: string, id: number | string, version = "v1"): string {

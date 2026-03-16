@@ -25,19 +25,20 @@ ShippingAddress.init(
     },
     city: {
       type: DataTypes.STRING,
-      primaryKey: true,
+      allowNull: false,
     },
     state: {
       type: DataTypes.STRING,
-      primaryKey: true,
+      allowNull: false,
     },
     zipCode: {
       type: DataTypes.STRING,
-      primaryKey: true,
+      allowNull: false,
+      field: "zip_code",
     },
     country: {
       type: DataTypes.STRING,
-      primaryKey: true,
+      allowNull: false,
     },
   },
   {

@@ -7,6 +7,7 @@ import {
   UnauthorizedError,
 } from "../utils/errors";
 import userRepository from "../repositories/user.repository";
+import userCache from "../cache/strategies/user.cache";
 
 const getUserWithoutPassword = (user: User) => {
   const { password, ...userWithoutPassword } = user;
@@ -52,9 +53,13 @@ const login = async (email: string, password: string) => {
 const getProfile = async (userId: number) => {
   if (!userId) throw new UnauthorizedError("Unauthorized");
 
+  const cached = await userCache.getById(userId);
+  if (cached) return getUserWithoutPassword(cached);
+
   const user = await userRepository.getOneById(userId);
   if (!user) throw new NotFoundError("User not found");
 
+  await userCache.setById(userId, user);
   return getUserWithoutPassword(user);
 };
 

@@ -5,6 +5,7 @@ import cartItemsRepository from "../repositories/order-item.repository";
 import transactionsRepository from "../repositories/transaction.repository";
 import OrderDto from "../interfaces/dto/order";
 import OrderQuery from "../interfaces/query/order";
+import productCache from "../cache/strategies/product.cache";
 
 const createOrder = async (orderData: OrderDto) => {
   const transaction = await transactionsRepository.createOne();
@@ -12,6 +13,27 @@ const createOrder = async (orderData: OrderDto) => {
   try {
     const { items, totalAmount, paymentIntentId, shippingAddressId, userId } =
       orderData;
+
+    // OPTIMIZATION: Batch fetch de productos
+    const productIds = items.map((item) => item.productId);
+
+    // Intentar obtener de cache
+    const cachedProducts = await productCache.getBulk(productIds);
+    const missingIds = productIds.filter((id) => !cachedProducts.has(id));
+
+    // Fetch missing products from DB en una sola query
+    let productMap = cachedProducts;
+    if (missingIds.length > 0) {
+      const dbProducts = await productRepository.getByIds(
+        missingIds,
+        transaction,
+      );
+      dbProducts.forEach((product) => productMap.set(product.id, product));
+
+      // Cachear productos recién obtenidos
+      const newProductsMap = new Map(dbProducts.map((p) => [p.id, p]));
+      await productCache.setBulk(newProductsMap);
+    }
 
     const order = await orderRepository.createOne(
       {
@@ -24,11 +46,9 @@ const createOrder = async (orderData: OrderDto) => {
       transaction,
     );
 
+    // Ahora usar productMap en lugar de queries individuales
     for (const item of items) {
-      const product = await productRepository.getOneById(
-        item.productId,
-        transaction,
-      );
+      const product = productMap.get(item.productId);
 
       if (!product || product.stock < item.quantity) {
         throw new BadRequestError(
@@ -51,6 +71,9 @@ const createOrder = async (orderData: OrderDto) => {
         { stock: product.stock - item.quantity },
         transaction,
       );
+
+      // Invalidar cache (stock cambió)
+      await productCache.invalidateById(item.productId);
     }
 
     await transaction.commit();

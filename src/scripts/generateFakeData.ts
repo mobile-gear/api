@@ -8,6 +8,7 @@ import path from "path";
 import fs from "fs";
 import { CreationAttributes } from "sequelize";
 import ShippingAddress from "../models/ShippingAddress";
+import IProduct from "../interfaces/entities/product";
 
 const generateUsers = async () => {
   const users = [
@@ -32,9 +33,11 @@ const generateUsers = async () => {
 
 const loadProducts = () => {
   const productsPath = path.join(__dirname, "../db/products.json");
-  const productsData = JSON.parse(fs.readFileSync(productsPath, "utf-8"));
+  const productsData: IProduct[] = JSON.parse(
+    fs.readFileSync(productsPath, "utf-8"),
+  );
 
-  return productsData.map((product: any) => ({
+  return productsData.map((product) => ({
     name: product.name,
     description:
       product.description ||

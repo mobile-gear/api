@@ -74,6 +74,17 @@ const getOneById = async (id: number, transaction?: Transaction) => {
   return product;
 };
 
+const getByIds = async (
+  ids: number[],
+  transaction?: Transaction,
+): Promise<Product[]> => {
+  const products = await Product.findAll({
+    where: { id: ids },
+    transaction,
+  });
+  return products;
+};
+
 const createOne = async (
   product: CreationAttributes<Product>,
   transaction?: Transaction,
@@ -103,6 +114,7 @@ const deleteOneById = async (id: number) => {
 export default {
   getAll,
   getOneById,
+  getByIds,
   createOne,
   updateOneById,
   deleteOneById,

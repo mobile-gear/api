@@ -2,16 +2,31 @@ import CartItemDto from "../interfaces/dto/cart-item";
 import paymentRepository from "../repositories/payment.repository";
 import productRepository from "../repositories/product.repository";
 import { BadRequestError } from "../utils/errors";
+import productCache from "../cache/strategies/product.cache";
 
 const validateCart = async (items: CartItemDto[]) => {
   if (!items || !Array.isArray(items))
     throw new BadRequestError("Invalid items array");
 
+  const productIds = items.map((item) => item.productId);
+
+  const cachedProducts = await productCache.getBulk(productIds);
+  const missingIds = productIds.filter((id) => !cachedProducts.has(id));
+
+  let productMap = cachedProducts;
+  if (missingIds.length > 0) {
+    const dbProducts = await productRepository.getByIds(missingIds);
+    dbProducts.forEach((product) => productMap.set(product.id, product));
+
+    const newProductsMap = new Map(dbProducts.map((p) => [p.id, p]));
+    await productCache.setBulk(newProductsMap);
+  }
+
   const validatedItems = [];
   let total = 0;
 
   for (const item of items) {
-    const product = await productRepository.getOneById(item.productId);
+    const product = productMap.get(item.productId);
 
     if (!product)
       throw new BadRequestError(`Product with id ${item.productId} not found`);

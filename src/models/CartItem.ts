@@ -48,7 +48,6 @@ CartItem.init(
     modelName: "CartItem",
     tableName: "cart_items",
     timestamps: true,
-    underscored: true,
   },
 );
 

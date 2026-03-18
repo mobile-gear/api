@@ -31,12 +31,10 @@ User.init(
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
-      field: "first_name",
     },
     lastName: {
       type: DataTypes.STRING,
       allowNull: false,
-      field: "last_name",
     },
     role: {
       type: DataTypes.STRING,
@@ -47,7 +45,6 @@ User.init(
     sequelize: db,
     tableName: "users",
     timestamps: true,
-    underscored: true,
   },
 );
 

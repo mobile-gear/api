@@ -22,7 +22,6 @@ Order.init(
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      field: "user_id",
       references: {
         model: "users",
         key: "id",
@@ -39,12 +38,10 @@ Order.init(
     paymentIntentId: {
       type: DataTypes.STRING,
       allowNull: false,
-      field: "payment_intent_id",
     },
     shippingAddressId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      field: "shipping_address_id",
       references: {
         model: "shipping_addresses",
         key: "id",
@@ -55,7 +52,6 @@ Order.init(
     sequelize: db,
     tableName: "orders",
     timestamps: true,
-    underscored: true,
   },
 );
 

@@ -51,7 +51,6 @@ Product.init(
     modelName: "Product",
     tableName: "products",
     timestamps: true,
-    underscored: true,
   },
 );
 

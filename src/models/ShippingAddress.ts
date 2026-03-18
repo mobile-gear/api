@@ -34,7 +34,6 @@ ShippingAddress.init(
     zipCode: {
       type: DataTypes.STRING,
       allowNull: false,
-      field: "zip_code",
     },
     country: {
       type: DataTypes.STRING,
@@ -46,7 +45,6 @@ ShippingAddress.init(
     modelName: "ShippingAddress",
     tableName: "shipping_addresses",
     timestamps: true,
-    underscored: true,
   },
 );
 

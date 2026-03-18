@@ -10,7 +10,7 @@ import userRepository from "../repositories/user.repository";
 import userCache from "../cache/strategies/user.cache";
 
 const getUserWithoutPassword = (user: User) => {
-  const { password, ...userWithoutPassword } = user;
+  const { password, ...userWithoutPassword } = user.get({ plain: true }) as User;
   return userWithoutPassword;
 };
 

@@ -1,32 +1,37 @@
 services:
-  db:
-    image: postgres:16-alpine
-    container_name: mobile-gear-postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: mobilegear
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+  api:
+    build: .
+    container_name: mobilegear-api
+    restart: always
+    env_file:
+      - .env
+    expose:
+      - "3000"
+    depends_on:
+      - redis
+    networks:
+      - apps-network
 
   redis:
     image: redis:7-alpine
-    container_name: mobile-gear-redis
+    container_name: mobilegear-redis
     restart: unless-stopped
-    ports:
-      - "6379:6379"
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
     volumes:
       - redis_data:/data
-    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    expose:
+      - "6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 3s
       retries: 3
+    networks:
+      - apps-network
 
 volumes:
-  postgres_data:
   redis_data:
+
+networks:
+  apps-network:
+    external: true

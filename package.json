@@ -8,7 +8,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "production": "node dist/server.js",
-    "generate:data": "ts-node src/scripts/generateFakeData.ts",
+    "seed": "ts-node src/scripts/generateFakeData.ts",
     "format": "prettier --write ."
   },
   "keywords": [],

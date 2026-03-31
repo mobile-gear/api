@@ -1,5 +1,7 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
+import helmet from "helmet";
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes";
 import productRoutes from "./routes/products.routes";
@@ -16,7 +18,14 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-app.use(cors());
+app.use(helmet());
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+    credentials: true,
+  }),
+);
+app.use(cookieParser());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
@@ -30,6 +39,10 @@ app.get("/api/cache/status", (_req, res) => {
     enabled: RedisClient.isEnabled(),
     stats,
   });
+});
+
+app.use((_err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  res.status(500).json({ message: "Internal server error" });
 });
 
 db.sync({ force: false }).then(async () => {

@@ -18,6 +18,7 @@ ShippingAddress.hasMany(Order, {
 
 Order.belongsTo(ShippingAddress, {
   foreignKey: "shippingAddressId",
+  as: "shippingAddress",
 });
 
 Product.hasMany(CartItem, {

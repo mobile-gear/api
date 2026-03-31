@@ -6,10 +6,9 @@ export default async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  const token = req.cookies?.token as string | undefined;
 
-  if (token == null) {
+  if (!token) {
     res.status(401).json({ message: "No token provided" });
     return;
   }

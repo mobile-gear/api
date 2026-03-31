@@ -1,5 +1,5 @@
 import { CreationAttributes, Op, Transaction, WhereOptions } from "sequelize";
-import { Order, CartItem } from "../models";
+import { Order, CartItem, ShippingAddress } from "../models";
 import OrderQuery from "../interfaces/query/order";
 
 const getAll = async (options: OrderQuery = {}) => {
@@ -43,7 +43,7 @@ const getAll = async (options: OrderQuery = {}) => {
 
   const { count, rows: orders } = await Order.findAndCountAll({
     where,
-    include: [{ model: CartItem, as: "items" }],
+    include: [{ model: CartItem, as: "items" }, { model: ShippingAddress, as: "shippingAddress" }],
     limit: itemsPerPage,
     offset: offset,
     order: [[validSortBy, sortOrder]],

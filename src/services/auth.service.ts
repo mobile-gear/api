@@ -18,7 +18,7 @@ const register = async (userData: User) => {
   const { email, password, firstName, lastName } = userData;
 
   const existingUser = await userRepository.getOne({ email });
-  if (existingUser) throw new BadRequestError("User already exists");
+  if (existingUser) throw new BadRequestError("An account with this email already exists.");
 
   const saltRounds = 10;
   const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -31,7 +31,14 @@ const register = async (userData: User) => {
     role: "user",
   });
 
-  return getUserWithoutPassword(newUser);
+  const user = getUserWithoutPassword(newUser);
+  const token = jwt.sign(
+    { id: newUser.id, email: newUser.email, role: newUser.role },
+    process.env.JWT_SECRET || "fallback_secret",
+    { expiresIn: "2h" },
+  );
+
+  return { token, user };
 };
 
 const login = async (email: string, password: string) => {

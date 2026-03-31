@@ -23,7 +23,12 @@ export const getProductById = async (
   next: NextFunction,
 ) => {
   try {
-    const product = await productService.getProductById(+req.params.id);
+    const id = parseInt(req.params.id, 10);
+    if (!Number.isInteger(id) || id <= 0) {
+      res.status(400).json({ message: "Invalid product ID" });
+      return;
+    }
+    const product = await productService.getProductById(id);
     res.json(product);
   } catch (error) {
     return handleError(error, res, next);

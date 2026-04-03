@@ -1,6 +1,7 @@
 import { Product } from "../models";
 import ProductQuery from "../interfaces/query/product";
-import { NotFoundError } from "../utils/errors";
+import { ConflictError, NotFoundError } from "../utils/errors";
+import { ForeignKeyConstraintError } from "sequelize";
 import productRepository from "../repositories/product.repository";
 import { CreationAttributes } from "sequelize";
 import productCache from "../cache/strategies/product.cache";
@@ -48,10 +49,16 @@ const updateProduct = async (
 };
 
 const deleteProduct = async (id: number) => {
-  const product = await productRepository.deleteOneById(id);
-  if (!product) throw new NotFoundError(`Product with id ${id} not found`);
+  try {
+    const product = await productRepository.deleteOneById(id);
+    if (!product) throw new NotFoundError(`Product with id ${id} not found`);
 
-  await productCache.invalidateById(id);
+    await productCache.invalidateById(id);
+  } catch (error) {
+    if (error instanceof ForeignKeyConstraintError)
+      throw new ConflictError("Cannot delete product because it has associated orders");
+    throw error;
+  }
 };
 
 export default {

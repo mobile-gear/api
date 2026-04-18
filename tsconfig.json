@@ -8,9 +8,7 @@
     "strictPropertyInitialization": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "typeRoots": ["./src/types", "./node_modules/@types"]
+    "skipLibCheck": true
   },
   "include": ["src/**/*"]
 }

@@ -43,6 +43,7 @@ const getAll = async (options: ProductQuery) => {
   }
 
   if (outOfStock) {
+    where.stock = {};
     if (outOfStock === "yes") where.stock[Op.eq] = 0;
     if (outOfStock === "no") where.stock[Op.gt] = 0;
   }

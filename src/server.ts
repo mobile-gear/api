@@ -45,11 +45,16 @@ app.use((_err: Error, _req: Request, res: Response, _next: NextFunction) => {
   res.status(500).json({ message: "Internal server error" });
 });
 
-db.sync({ force: false }).then(async () => {
+export async function startServer() {
+  await db.sync({ force: false });
   await warmUpCache();
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
-});
+}
+
+if (require.main === module) {
+  startServer();
+}
 
 export default app;

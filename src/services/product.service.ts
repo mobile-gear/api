@@ -56,7 +56,9 @@ const deleteProduct = async (id: number) => {
     await productCache.invalidateById(id);
   } catch (error) {
     if (error instanceof ForeignKeyConstraintError)
-      throw new ConflictError("Cannot delete product because it has associated orders");
+      throw new ConflictError(
+        "Cannot delete product because it has associated orders",
+      );
     throw error;
   }
 };

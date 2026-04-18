@@ -1,4 +1,10 @@
-import { HttpError, NotFoundError, BadRequestError, UnauthorizedError, ConflictError } from "../../utils/errors";
+import {
+  HttpError,
+  NotFoundError,
+  BadRequestError,
+  UnauthorizedError,
+  ConflictError,
+} from "../../utils/errors";
 
 describe("Error Classes", () => {
   describe("HttpError", () => {

@@ -1,7 +1,15 @@
 import express from "express";
-import { getProfile, login, logout, register } from "../controllers/auth.controller";
+import {
+  getProfile,
+  login,
+  logout,
+  register,
+} from "../controllers/auth.controller";
 import authenticateToken from "../middleware/authenticateToken";
-import { loginRateLimiter, registerRateLimiter } from "../middleware/rateLimiter";
+import {
+  loginRateLimiter,
+  registerRateLimiter,
+} from "../middleware/rateLimiter";
 
 const router = express.Router();
 

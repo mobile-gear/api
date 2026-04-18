@@ -21,7 +21,9 @@ describe("Order Item Repository", () => {
 
       const cartItem = await orderItemRepository.createOne(cartItemData);
       expect(cartItem).toEqual(mockCartItem);
-      expect(CartItem.create).toHaveBeenCalledWith(cartItemData, { transaction: undefined });
+      expect(CartItem.create).toHaveBeenCalledWith(cartItemData, {
+        transaction: undefined,
+      });
     });
 
     it("should create order item with transaction", async () => {
@@ -31,13 +33,21 @@ describe("Order Item Repository", () => {
         quantity: 2,
         price: 100,
       };
-      const mockTransaction = { commit: jest.fn(), rollback: jest.fn() } as never;
+      const mockTransaction = {
+        commit: jest.fn(),
+        rollback: jest.fn(),
+      } as never;
       const mockCartItem = { id: 1, ...cartItemData };
       (CartItem.create as jest.Mock).mockResolvedValue(mockCartItem);
 
-      const cartItem = await orderItemRepository.createOne(cartItemData, mockTransaction);
+      const cartItem = await orderItemRepository.createOne(
+        cartItemData,
+        mockTransaction,
+      );
       expect(cartItem).toEqual(mockCartItem);
-      expect(CartItem.create).toHaveBeenCalledWith(cartItemData, { transaction: mockTransaction });
+      expect(CartItem.create).toHaveBeenCalledWith(cartItemData, {
+        transaction: mockTransaction,
+      });
     });
 
     it("should handle zero quantity", async () => {

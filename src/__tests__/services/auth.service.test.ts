@@ -1,7 +1,11 @@
 import authService from "../../services/auth.service";
 import userRepository from "../../repositories/user.repository";
 import userCache from "../../cache/strategies/user.cache";
-import { BadRequestError, NotFoundError, UnauthorizedError } from "../../utils/errors";
+import {
+  BadRequestError,
+  NotFoundError,
+  UnauthorizedError,
+} from "../../utils/errors";
 
 jest.mock("../../repositories/user.repository");
 jest.mock("../../cache/strategies/user.cache");
@@ -18,13 +22,28 @@ describe("Auth Service", () => {
 
   describe("register", () => {
     it("should register new user successfully", async () => {
-      const userData = { email: "test@example.com", password: "password123", firstName: "Test", lastName: "User" };
-      const newUser = { 
-        id: 1, 
-        ...userData, 
-        password: "hashed_password", 
+      const userData = {
+        email: "test@example.com",
+        password: "password123",
+        firstName: "Test",
+        lastName: "User",
+      };
+      const newUser = {
+        id: 1,
+        ...userData,
+        password: "hashed_password",
         role: "user",
-        get: jest.fn().mockReturnValue({ plain: () => ({ id: 1, email: "test@example.com", firstName: "Test", lastName: "User", role: "user" }) })
+        get: jest
+          .fn()
+          .mockReturnValue({
+            plain: () => ({
+              id: 1,
+              email: "test@example.com",
+              firstName: "Test",
+              lastName: "User",
+              role: "user",
+            }),
+          }),
       };
       (userRepository.getOne as jest.Mock).mockResolvedValue(null);
       (userRepository.createOne as jest.Mock).mockResolvedValue(newUser);
@@ -38,21 +57,45 @@ describe("Auth Service", () => {
     });
 
     it("should throw BadRequestError if email already exists", async () => {
-      (userRepository.getOne as jest.Mock).mockResolvedValue({ id: 1, email: "test@example.com" });
+      (userRepository.getOne as jest.Mock).mockResolvedValue({
+        id: 1,
+        email: "test@example.com",
+      });
 
-      await expect(authService.register({ email: "test@example.com", password: "password123", firstName: "Test", lastName: "User" } as never))
-        .rejects.toThrow(BadRequestError);
+      await expect(
+        authService.register({
+          email: "test@example.com",
+          password: "password123",
+          firstName: "Test",
+          lastName: "User",
+        } as never),
+      ).rejects.toThrow(BadRequestError);
     });
 
     it("should use fallback secret when JWT_SECRET is not set", async () => {
       delete process.env.JWT_SECRET;
-      const userData = { email: "test@example.com", password: "password123", firstName: "Test", lastName: "User" };
-      const newUser = { 
-        id: 1, 
-        ...userData, 
-        password: "hashed_password", 
+      const userData = {
+        email: "test@example.com",
+        password: "password123",
+        firstName: "Test",
+        lastName: "User",
+      };
+      const newUser = {
+        id: 1,
+        ...userData,
+        password: "hashed_password",
         role: "user",
-        get: jest.fn().mockReturnValue({ plain: () => ({ id: 1, email: "test@example.com", firstName: "Test", lastName: "User", role: "user" }) })
+        get: jest
+          .fn()
+          .mockReturnValue({
+            plain: () => ({
+              id: 1,
+              email: "test@example.com",
+              firstName: "Test",
+              lastName: "User",
+              role: "user",
+            }),
+          }),
       };
       (userRepository.getOne as jest.Mock).mockResolvedValue(null);
       (userRepository.createOne as jest.Mock).mockResolvedValue(newUser);
@@ -66,12 +109,16 @@ describe("Auth Service", () => {
 
   describe("login", () => {
     it("should login user successfully", async () => {
-      const user = { 
-        id: 1, 
-        email: "test@example.com", 
-        password: "hashed_password", 
+      const user = {
+        id: 1,
+        email: "test@example.com",
+        password: "hashed_password",
         role: "user",
-        get: jest.fn().mockReturnValue({ plain: () => ({ id: 1, email: "test@example.com", role: "user" }) })
+        get: jest
+          .fn()
+          .mockReturnValue({
+            plain: () => ({ id: 1, email: "test@example.com", role: "user" }),
+          }),
       };
       (userRepository.getOne as jest.Mock).mockResolvedValue(user);
       const bcrypt = require("bcryptjs");
@@ -86,33 +133,43 @@ describe("Auth Service", () => {
     it("should throw UnauthorizedError if user not found", async () => {
       (userRepository.getOne as jest.Mock).mockResolvedValue(null);
 
-      await expect(authService.login("test@example.com", "password123"))
-        .rejects.toThrow(UnauthorizedError);
+      await expect(
+        authService.login("test@example.com", "password123"),
+      ).rejects.toThrow(UnauthorizedError);
     });
 
     it("should throw UnauthorizedError if password is invalid", async () => {
-      const user = { 
-        id: 1, 
-        email: "test@example.com", 
+      const user = {
+        id: 1,
+        email: "test@example.com",
         password: "hashed_password",
-        get: jest.fn().mockReturnValue({ plain: () => ({ id: 1, email: "test@example.com" }) })
+        get: jest
+          .fn()
+          .mockReturnValue({
+            plain: () => ({ id: 1, email: "test@example.com" }),
+          }),
       };
       (userRepository.getOne as jest.Mock).mockResolvedValue(user);
       const bcrypt = require("bcryptjs");
       bcrypt.compare = jest.fn().mockResolvedValue(false);
 
-      await expect(authService.login("test@example.com", "wrongpassword"))
-        .rejects.toThrow(UnauthorizedError);
+      await expect(
+        authService.login("test@example.com", "wrongpassword"),
+      ).rejects.toThrow(UnauthorizedError);
     });
 
     it("should use fallback secret when JWT_SECRET is not set", async () => {
       delete process.env.JWT_SECRET;
-      const user = { 
-        id: 1, 
-        email: "test@example.com", 
-        password: "hashed_password", 
+      const user = {
+        id: 1,
+        email: "test@example.com",
+        password: "hashed_password",
         role: "user",
-        get: jest.fn().mockReturnValue({ plain: () => ({ id: 1, email: "test@example.com", role: "user" }) })
+        get: jest
+          .fn()
+          .mockReturnValue({
+            plain: () => ({ id: 1, email: "test@example.com", role: "user" }),
+          }),
       };
       (userRepository.getOne as jest.Mock).mockResolvedValue(user);
       const bcrypt = require("bcryptjs");
@@ -125,7 +182,16 @@ describe("Auth Service", () => {
 
   describe("getProfile", () => {
     it("should get user profile from cache", async () => {
-      const user = { id: 1, email: "test@example.com", password: "password123", get: jest.fn().mockReturnValue({ plain: () => ({ id: 1, email: "test@example.com" }) }) };
+      const user = {
+        id: 1,
+        email: "test@example.com",
+        password: "password123",
+        get: jest
+          .fn()
+          .mockReturnValue({
+            plain: () => ({ id: 1, email: "test@example.com" }),
+          }),
+      };
       (userCache.getById as jest.Mock).mockResolvedValue(user);
 
       const result = await authService.getProfile(1);
@@ -134,7 +200,16 @@ describe("Auth Service", () => {
     });
 
     it("should get user profile from database if cache miss", async () => {
-      const user = { id: 1, email: "test@example.com", password: "password123", get: jest.fn().mockReturnValue({ plain: () => ({ id: 1, email: "test@example.com" }) }) };
+      const user = {
+        id: 1,
+        email: "test@example.com",
+        password: "password123",
+        get: jest
+          .fn()
+          .mockReturnValue({
+            plain: () => ({ id: 1, email: "test@example.com" }),
+          }),
+      };
       (userCache.getById as jest.Mock).mockResolvedValue(null);
       (userRepository.getOneById as jest.Mock).mockResolvedValue(user);
 
@@ -144,16 +219,16 @@ describe("Auth Service", () => {
     });
 
     it("should throw UnauthorizedError if userId is not provided", async () => {
-      await expect(authService.getProfile(0 as never))
-        .rejects.toThrow(UnauthorizedError);
+      await expect(authService.getProfile(0 as never)).rejects.toThrow(
+        UnauthorizedError,
+      );
     });
 
     it("should throw NotFoundError if user not found in cache or DB", async () => {
       (userCache.getById as jest.Mock).mockResolvedValue(null);
       (userRepository.getOneById as jest.Mock).mockResolvedValue(null);
 
-      await expect(authService.getProfile(1))
-        .rejects.toThrow(NotFoundError);
+      await expect(authService.getProfile(1)).rejects.toThrow(NotFoundError);
     });
   });
 });

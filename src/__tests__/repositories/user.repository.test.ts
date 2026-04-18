@@ -21,7 +21,9 @@ describe("User Repository", () => {
     it("should return null if user not found", async () => {
       (User.findOne as jest.Mock).mockResolvedValue(null);
 
-      const user = await userRepository.getOne({ email: "nonexistent@example.com" });
+      const user = await userRepository.getOne({
+        email: "nonexistent@example.com",
+      });
       expect(user).toBeNull();
     });
   });

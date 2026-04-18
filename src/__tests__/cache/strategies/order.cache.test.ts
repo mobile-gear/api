@@ -74,7 +74,9 @@ describe("Order Cache Strategy", () => {
 
   describe("invalidateUserOrders", () => {
     it("should invalidate user orders", async () => {
-      (CacheService.prototype.deletePattern as jest.Mock).mockResolvedValue(undefined);
+      (CacheService.prototype.deletePattern as jest.Mock).mockResolvedValue(
+        undefined,
+      );
 
       await orderCache.invalidateUserOrders(1);
       expect(CacheService.prototype.deletePattern).toHaveBeenCalled();

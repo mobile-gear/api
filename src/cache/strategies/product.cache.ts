@@ -32,10 +32,7 @@ class ProductCacheStrategy {
     return this.listCache.get(key);
   }
 
-  async setList(
-    query: ProductQuery,
-    result: ProductListResult,
-  ): Promise<void> {
+  async setList(query: ProductQuery, result: ProductListResult): Promise<void> {
     const key = keyBuilder.collection(
       "products",
       query as Record<string, string | number | boolean | null | undefined>,

@@ -43,12 +43,15 @@ describe("Order Service", () => {
       (orderCache.getById as jest.Mock).mockResolvedValue(null);
       (orderRepository.getOne as jest.Mock).mockResolvedValue(null);
 
-      await expect(orderService.getOrderById(999, 1)).rejects.toThrow(NotFoundError);
+      await expect(orderService.getOrderById(999, 1)).rejects.toThrow(
+        NotFoundError,
+      );
     });
 
     it("should throw NotFoundError if userId is not provided", async () => {
-      await expect(orderService.getOrderById(1, 0 as never))
-        .rejects.toThrow(NotFoundError);
+      await expect(orderService.getOrderById(1, 0 as never)).rejects.toThrow(
+        NotFoundError,
+      );
     });
   });
 
@@ -95,13 +98,19 @@ describe("Order Service", () => {
       const mockTransaction = { commit: jest.fn(), rollback: jest.fn() };
       const mockProduct = { id: 1, price: 100, stock: 10 };
       const mockOrder = { id: 1, userId: 1, total: 200 };
-      
-      (transactionsRepository.createOne as jest.Mock).mockResolvedValue(mockTransaction);
-      (productCache.getBulk as jest.Mock).mockResolvedValue(new Map([[1, mockProduct]]));
+
+      (transactionsRepository.createOne as jest.Mock).mockResolvedValue(
+        mockTransaction,
+      );
+      (productCache.getBulk as jest.Mock).mockResolvedValue(
+        new Map([[1, mockProduct]]),
+      );
       (orderRepository.createOne as jest.Mock).mockResolvedValue(mockOrder);
       (orderRepository.getOneById as jest.Mock).mockResolvedValue(mockOrder);
       (cartItemsRepository.createOne as jest.Mock).mockResolvedValue({});
-      (productRepository.updateOneById as jest.Mock).mockResolvedValue(mockProduct);
+      (productRepository.updateOneById as jest.Mock).mockResolvedValue(
+        mockProduct,
+      );
 
       const order = await orderService.createOrder(orderData);
       expect(order).toEqual(mockOrder);
@@ -119,14 +128,20 @@ describe("Order Service", () => {
       const mockTransaction = { commit: jest.fn(), rollback: jest.fn() };
       const mockProduct = { id: 1, price: 100, stock: 10 };
       const mockOrder = { id: 1, userId: 1, total: 200 };
-      
-      (transactionsRepository.createOne as jest.Mock).mockResolvedValue(mockTransaction);
+
+      (transactionsRepository.createOne as jest.Mock).mockResolvedValue(
+        mockTransaction,
+      );
       (productCache.getBulk as jest.Mock).mockResolvedValue(new Map());
-      (productRepository.getByIds as jest.Mock).mockResolvedValue([mockProduct]);
+      (productRepository.getByIds as jest.Mock).mockResolvedValue([
+        mockProduct,
+      ]);
       (orderRepository.createOne as jest.Mock).mockResolvedValue(mockOrder);
       (orderRepository.getOneById as jest.Mock).mockResolvedValue(mockOrder);
       (cartItemsRepository.createOne as jest.Mock).mockResolvedValue({});
-      (productRepository.updateOneById as jest.Mock).mockResolvedValue(mockProduct);
+      (productRepository.updateOneById as jest.Mock).mockResolvedValue(
+        mockProduct,
+      );
 
       const order = await orderService.createOrder(orderData);
       expect(order).toEqual(mockOrder);
@@ -144,12 +159,18 @@ describe("Order Service", () => {
       };
       const mockTransaction = { commit: jest.fn(), rollback: jest.fn() };
       const mockProduct = { id: 1, price: 100, stock: 5 };
-      
-      (transactionsRepository.createOne as jest.Mock).mockResolvedValue(mockTransaction);
-      (productCache.getBulk as jest.Mock).mockResolvedValue(new Map([[1, mockProduct]]));
+
+      (transactionsRepository.createOne as jest.Mock).mockResolvedValue(
+        mockTransaction,
+      );
+      (productCache.getBulk as jest.Mock).mockResolvedValue(
+        new Map([[1, mockProduct]]),
+      );
       (orderRepository.createOne as jest.Mock).mockResolvedValue({ id: 1 });
 
-      await expect(orderService.createOrder(orderData)).rejects.toThrow(BadRequestError);
+      await expect(orderService.createOrder(orderData)).rejects.toThrow(
+        BadRequestError,
+      );
       expect(mockTransaction.rollback).toHaveBeenCalled();
     });
 
@@ -163,12 +184,20 @@ describe("Order Service", () => {
       };
       const mockTransaction = { commit: jest.fn(), rollback: jest.fn() };
       const mockProduct = { id: 1, price: 100, stock: 10 };
-      
-      (transactionsRepository.createOne as jest.Mock).mockResolvedValue(mockTransaction);
-      (productCache.getBulk as jest.Mock).mockResolvedValue(new Map([[1, mockProduct]]));
-      (orderRepository.createOne as jest.Mock).mockRejectedValue(new Error("DB error"));
 
-      await expect(orderService.createOrder(orderData)).rejects.toThrow("DB error");
+      (transactionsRepository.createOne as jest.Mock).mockResolvedValue(
+        mockTransaction,
+      );
+      (productCache.getBulk as jest.Mock).mockResolvedValue(
+        new Map([[1, mockProduct]]),
+      );
+      (orderRepository.createOne as jest.Mock).mockRejectedValue(
+        new Error("DB error"),
+      );
+
+      await expect(orderService.createOrder(orderData)).rejects.toThrow(
+        "DB error",
+      );
       expect(mockTransaction.rollback).toHaveBeenCalled();
     });
 
@@ -180,12 +209,20 @@ describe("Order Service", () => {
         paymentIntentId: "pi_test",
       };
       const mockTransaction = { commit: jest.fn(), rollback: jest.fn() };
-      (transactionsRepository.createOne as jest.Mock).mockResolvedValue(mockTransaction);
-      (productCache.getBulk as jest.Mock).mockResolvedValue(new Map([[1, { id: 1, stock: 5 }]]));
-      (orderRepository.createOne as jest.Mock).mockResolvedValue({ id: 1, userId: 1 });
+      (transactionsRepository.createOne as jest.Mock).mockResolvedValue(
+        mockTransaction,
+      );
+      (productCache.getBulk as jest.Mock).mockResolvedValue(
+        new Map([[1, { id: 1, stock: 5 }]]),
+      );
+      (orderRepository.createOne as jest.Mock).mockResolvedValue({
+        id: 1,
+        userId: 1,
+      });
 
-      await expect(orderService.createOrder(orderData as never))
-        .rejects.toThrow(BadRequestError);
+      await expect(
+        orderService.createOrder(orderData as never),
+      ).rejects.toThrow(BadRequestError);
     });
   });
 
@@ -203,7 +240,9 @@ describe("Order Service", () => {
     it("should throw NotFoundError if order not found", async () => {
       (orderRepository.updateOneById as jest.Mock).mockResolvedValue(null);
 
-      await expect(orderService.updateOrderStatus(999, "shipped")).rejects.toThrow(NotFoundError);
+      await expect(
+        orderService.updateOrderStatus(999, "shipped"),
+      ).rejects.toThrow(NotFoundError);
     });
   });
 });

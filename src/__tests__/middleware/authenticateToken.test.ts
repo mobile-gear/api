@@ -41,7 +41,9 @@ describe("Authenticate Token Middleware", () => {
   });
 
   it("should send 403 if token is invalid", async () => {
-    (jwt.verify as jest.Mock).mockImplementation(() => { throw new Error("Invalid token"); });
+    (jwt.verify as jest.Mock).mockImplementation(() => {
+      throw new Error("Invalid token");
+    });
     mockReq.cookies = { token: "invalid_token" };
 
     await authenticateToken(mockReq as Request, mockRes as Response, mockNext);
@@ -50,7 +52,10 @@ describe("Authenticate Token Middleware", () => {
   });
 
   it("should call next if token is valid", async () => {
-    (jwt.verify as jest.Mock).mockReturnValue({ userId: 1, email: "test@example.com" });
+    (jwt.verify as jest.Mock).mockReturnValue({
+      userId: 1,
+      email: "test@example.com",
+    });
     mockReq.cookies = { token: "valid_token" };
 
     await authenticateToken(mockReq as Request, mockRes as Response, mockNext);
@@ -60,7 +65,10 @@ describe("Authenticate Token Middleware", () => {
 
   it("should use fallback secret when JWT_SECRET is not set", async () => {
     delete process.env.JWT_SECRET;
-    (jwt.verify as jest.Mock).mockReturnValue({ userId: 1, email: "test@example.com" });
+    (jwt.verify as jest.Mock).mockReturnValue({
+      userId: 1,
+      email: "test@example.com",
+    });
     mockReq.cookies = { token: "valid_token" };
 
     await authenticateToken(mockReq as Request, mockRes as Response, mockNext);
@@ -71,7 +79,9 @@ describe("Authenticate Token Middleware", () => {
   it("should send 403 if token is expired", async () => {
     const error = new Error("Token expired") as Error & { name: string };
     error.name = "TokenExpiredError";
-    (jwt.verify as jest.Mock).mockImplementation(() => { throw error; });
+    (jwt.verify as jest.Mock).mockImplementation(() => {
+      throw error;
+    });
     mockReq.cookies = { token: "expired_token" };
 
     await authenticateToken(mockReq as Request, mockRes as Response, mockNext);
@@ -80,7 +90,9 @@ describe("Authenticate Token Middleware", () => {
   });
 
   it("should send 403 if token is malformed", async () => {
-    (jwt.verify as jest.Mock).mockImplementation(() => { throw new Error("jwt malformed"); });
+    (jwt.verify as jest.Mock).mockImplementation(() => {
+      throw new Error("jwt malformed");
+    });
     mockReq.cookies = { token: "malformed_token" };
 
     await authenticateToken(mockReq as Request, mockRes as Response, mockNext);

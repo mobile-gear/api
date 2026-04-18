@@ -84,7 +84,7 @@ const generateOrders = async (
           orderId,
           productId,
           quantity,
-          price
+          price,
         });
       }
 

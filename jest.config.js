@@ -25,7 +25,7 @@ module.exports = {
     },
   },
   globals: {
-    "dotenv": {
+    dotenv: {
       path: ".env.test",
     },
   },

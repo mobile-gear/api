@@ -29,7 +29,11 @@ describe("Product Controller", () => {
         pagination: { page: 1, limit: 10, total: 0 },
       });
 
-      await productController.getAllProducts(mockReq as unknown as Request, mockRes as unknown as Response, jest.fn());
+      await productController.getAllProducts(
+        mockReq as unknown as Request,
+        mockRes as unknown as Response,
+        jest.fn(),
+      );
       expect(mockRes.json).toHaveBeenCalled();
     });
   });
@@ -42,22 +46,36 @@ describe("Product Controller", () => {
         name: "Test Product",
       });
 
-      await productController.getProductById(mockReq as unknown as Request, mockRes as unknown as Response, jest.fn());
+      await productController.getProductById(
+        mockReq as unknown as Request,
+        mockRes as unknown as Response,
+        jest.fn(),
+      );
       expect(mockRes.json).toHaveBeenCalled();
     });
 
     it("should return 400 on invalid product id", async () => {
       mockReq.params = { id: "invalid" };
 
-      await productController.getProductById(mockReq as unknown as Request, mockRes as unknown as Response, jest.fn());
+      await productController.getProductById(
+        mockReq as unknown as Request,
+        mockRes as unknown as Response,
+        jest.fn(),
+      );
       expect(mockRes.status).toHaveBeenCalledWith(400);
     });
 
     it("should return 404 on NotFoundError", async () => {
       mockReq.params = { id: "1" };
-      (productService.getProductById as jest.Mock).mockRejectedValue(new NotFoundError("Product not found"));
+      (productService.getProductById as jest.Mock).mockRejectedValue(
+        new NotFoundError("Product not found"),
+      );
 
-      await productController.getProductById(mockReq as unknown as Request, mockRes as unknown as Response, jest.fn());
+      await productController.getProductById(
+        mockReq as unknown as Request,
+        mockRes as unknown as Response,
+        jest.fn(),
+      );
       expect(mockRes.status).toHaveBeenCalledWith(404);
     });
   });
@@ -76,15 +94,25 @@ describe("Product Controller", () => {
         name: "New Product",
       });
 
-      await productController.createProduct(mockReq as unknown as Request, mockRes as unknown as Response, jest.fn());
+      await productController.createProduct(
+        mockReq as unknown as Request,
+        mockRes as unknown as Response,
+        jest.fn(),
+      );
       expect(mockRes.status).toHaveBeenCalledWith(201);
       expect(mockRes.json).toHaveBeenCalled();
     });
 
     it("should return 401 on UnauthorizedError", async () => {
-      (productService.createProduct as jest.Mock).mockRejectedValue(new UnauthorizedError("Not authorized"));
+      (productService.createProduct as jest.Mock).mockRejectedValue(
+        new UnauthorizedError("Not authorized"),
+      );
 
-      await productController.createProduct(mockReq as unknown as Request, mockRes as unknown as Response, jest.fn());
+      await productController.createProduct(
+        mockReq as unknown as Request,
+        mockRes as unknown as Response,
+        jest.fn(),
+      );
       expect(mockRes.status).toHaveBeenCalledWith(401);
     });
   });
@@ -98,15 +126,25 @@ describe("Product Controller", () => {
         name: "Updated Product",
       });
 
-      await productController.updateProduct(mockReq as unknown as Request, mockRes as unknown as Response, jest.fn());
+      await productController.updateProduct(
+        mockReq as unknown as Request,
+        mockRes as unknown as Response,
+        jest.fn(),
+      );
       expect(mockRes.json).toHaveBeenCalled();
     });
 
     it("should return 404 on NotFoundError", async () => {
       mockReq.params = { id: "1" };
-      (productService.updateProduct as jest.Mock).mockRejectedValue(new NotFoundError("Product not found"));
+      (productService.updateProduct as jest.Mock).mockRejectedValue(
+        new NotFoundError("Product not found"),
+      );
 
-      await productController.updateProduct(mockReq as unknown as Request, mockRes as unknown as Response, jest.fn());
+      await productController.updateProduct(
+        mockReq as unknown as Request,
+        mockRes as unknown as Response,
+        jest.fn(),
+      );
       expect(mockRes.status).toHaveBeenCalledWith(404);
     });
   });
@@ -119,15 +157,25 @@ describe("Product Controller", () => {
         name: "Deleted Product",
       });
 
-      await productController.deleteProduct(mockReq as unknown as Request, mockRes as unknown as Response, jest.fn());
+      await productController.deleteProduct(
+        mockReq as unknown as Request,
+        mockRes as unknown as Response,
+        jest.fn(),
+      );
       expect(mockRes.status).toHaveBeenCalledWith(204);
     });
 
     it("should return 404 on NotFoundError", async () => {
       mockReq.params = { id: "1" };
-      (productService.deleteProduct as jest.Mock).mockRejectedValue(new NotFoundError("Product not found"));
+      (productService.deleteProduct as jest.Mock).mockRejectedValue(
+        new NotFoundError("Product not found"),
+      );
 
-      await productController.deleteProduct(mockReq as unknown as Request, mockRes as unknown as Response, jest.fn());
+      await productController.deleteProduct(
+        mockReq as unknown as Request,
+        mockRes as unknown as Response,
+        jest.fn(),
+      );
       expect(mockRes.status).toHaveBeenCalledWith(404);
     });
   });

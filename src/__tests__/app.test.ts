@@ -28,7 +28,9 @@ describe("API Routes", () => {
   });
 
   it("should have checkout routes available", async () => {
-    const response = await request(app).get("/api/checkout/create-payment-intent");
+    const response = await request(app).get(
+      "/api/checkout/create-payment-intent",
+    );
     expect([401]).toContain(response.status);
   });
 });
@@ -236,12 +238,14 @@ describe("Orders Endpoints Integration", () => {
   let productId: number;
 
   beforeAll(async () => {
-    const registerResponse = await request(app).post("/api/auth/register").send({
-      email: `orderuser${Date.now()}@example.com`,
-      password: "password123",
-      firstName: "Order",
-      lastName: "User",
-    });
+    const registerResponse = await request(app)
+      .post("/api/auth/register")
+      .send({
+        email: `orderuser${Date.now()}@example.com`,
+        password: "password123",
+        firstName: "Order",
+        lastName: "User",
+      });
     if (registerResponse.status === 200 || registerResponse.status === 201) {
       userToken = registerResponse.body.token;
       userId = registerResponse.body.user.id;
@@ -319,9 +323,11 @@ describe("Checkout Endpoints Integration", () => {
   });
 
   it("should fail create payment intent without token", async () => {
-    const response = await request(app).post("/api/checkout/create-payment-intent").send({
-      items: [{ productId: 1, quantity: 2 }],
-    });
+    const response = await request(app)
+      .post("/api/checkout/create-payment-intent")
+      .send({
+        items: [{ productId: 1, quantity: 2 }],
+      });
     expect([401]).toContain(response.status);
   });
 });

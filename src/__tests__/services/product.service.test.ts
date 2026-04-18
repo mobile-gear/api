@@ -46,7 +46,9 @@ describe("Product Service", () => {
     it("should get product from database if cache miss", async () => {
       const mockProduct = { id: 1, name: "Product 1" };
       (productCache.getById as jest.Mock).mockResolvedValue(null);
-      (productRepository.getOneById as jest.Mock).mockResolvedValue(mockProduct);
+      (productRepository.getOneById as jest.Mock).mockResolvedValue(
+        mockProduct,
+      );
 
       const result = await productService.getProductById(1);
       expect(result).toEqual(mockProduct);
@@ -57,8 +59,9 @@ describe("Product Service", () => {
       (productCache.getById as jest.Mock).mockResolvedValue(null);
       (productRepository.getOneById as jest.Mock).mockResolvedValue(null);
 
-      await expect(productService.getProductById(1))
-        .rejects.toThrow(NotFoundError);
+      await expect(productService.getProductById(1)).rejects.toThrow(
+        NotFoundError,
+      );
     });
   });
 
@@ -76,9 +79,13 @@ describe("Product Service", () => {
   describe("updateProduct", () => {
     it("should update product successfully", async () => {
       const mockProduct = { id: 1, name: "Updated Product" };
-      (productRepository.updateOneById as jest.Mock).mockResolvedValue(mockProduct);
+      (productRepository.updateOneById as jest.Mock).mockResolvedValue(
+        mockProduct,
+      );
 
-      const result = await productService.updateProduct(1, { name: "Updated Product" } as never);
+      const result = await productService.updateProduct(1, {
+        name: "Updated Product",
+      } as never);
       expect(result).toEqual(mockProduct);
       expect(productCache.invalidateById).toHaveBeenCalledWith(1);
     });
@@ -86,15 +93,18 @@ describe("Product Service", () => {
     it("should throw NotFoundError if product not found", async () => {
       (productRepository.updateOneById as jest.Mock).mockResolvedValue(null);
 
-      await expect(productService.updateProduct(1, { name: "Updated" } as never))
-        .rejects.toThrow(NotFoundError);
+      await expect(
+        productService.updateProduct(1, { name: "Updated" } as never),
+      ).rejects.toThrow(NotFoundError);
     });
   });
 
   describe("deleteProduct", () => {
     it("should delete product successfully", async () => {
       const mockProduct = { id: 1, name: "Product 1" };
-      (productRepository.deleteOneById as jest.Mock).mockResolvedValue(mockProduct);
+      (productRepository.deleteOneById as jest.Mock).mockResolvedValue(
+        mockProduct,
+      );
 
       await productService.deleteProduct(1);
       expect(productCache.invalidateById).toHaveBeenCalledWith(1);
@@ -103,24 +113,29 @@ describe("Product Service", () => {
     it("should throw NotFoundError if product not found", async () => {
       (productRepository.deleteOneById as jest.Mock).mockResolvedValue(null);
 
-      await expect(productService.deleteProduct(1))
-        .rejects.toThrow(NotFoundError);
+      await expect(productService.deleteProduct(1)).rejects.toThrow(
+        NotFoundError,
+      );
     });
 
     it("should throw ConflictError if foreign key constraint error", async () => {
-      const fkError = new ForeignKeyConstraintError({ message: "Foreign key constraint" });
+      const fkError = new ForeignKeyConstraintError({
+        message: "Foreign key constraint",
+      });
       (productRepository.deleteOneById as jest.Mock).mockRejectedValue(fkError);
 
-      await expect(productService.deleteProduct(1))
-        .rejects.toThrow(ConflictError);
+      await expect(productService.deleteProduct(1)).rejects.toThrow(
+        ConflictError,
+      );
     });
 
     it("should rethrow other errors", async () => {
       const error = new Error("Some other error");
       (productRepository.deleteOneById as jest.Mock).mockRejectedValue(error);
 
-      await expect(productService.deleteProduct(1))
-        .rejects.toThrow("Some other error");
+      await expect(productService.deleteProduct(1)).rejects.toThrow(
+        "Some other error",
+      );
     });
   });
 });

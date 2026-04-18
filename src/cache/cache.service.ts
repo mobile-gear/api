@@ -6,7 +6,9 @@ class CacheService<T> implements ICacheService<T> {
   private redis = RedisClient.getInstance();
   private defaultTTL: number;
 
-  constructor(defaultTTL: number = Number(process.env.REDIS_DEFAULT_TTL) || 3600) {
+  constructor(
+    defaultTTL: number = Number(process.env.REDIS_DEFAULT_TTL) || 3600,
+  ) {
     this.defaultTTL = defaultTTL;
   }
 

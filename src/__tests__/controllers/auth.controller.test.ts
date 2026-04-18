@@ -44,18 +44,28 @@ describe("Auth Controller", () => {
         user: { id: 1, email: "test@example.com" },
       });
 
-      await authController.register(mockReq as unknown as Request, mockRes as unknown as Response, mockNext);
+      await authController.register(
+        mockReq as unknown as Request,
+        mockRes as unknown as Response,
+        mockNext,
+      );
       expect(mockRes.status).toHaveBeenCalledWith(201);
       expect(mockRes.json).toHaveBeenCalled();
     });
 
     it("should return 400 on BadRequestError", async () => {
-      (authService.register as jest.Mock).mockRejectedValue(new BadRequestError("Email already exists"));
+      (authService.register as jest.Mock).mockRejectedValue(
+        new BadRequestError("Email already exists"),
+      );
       (handleError as jest.Mock).mockImplementation((error, res) => {
         res.status(error.statusCode).json({ message: error.message });
       });
 
-      await authController.register(mockReq as unknown as Request, mockRes as unknown as Response, mockNext);
+      await authController.register(
+        mockReq as unknown as Request,
+        mockRes as unknown as Response,
+        mockNext,
+      );
       expect(handleError).toHaveBeenCalled();
     });
   });
@@ -71,18 +81,28 @@ describe("Auth Controller", () => {
         user: { id: 1, email: "test@example.com" },
       });
 
-      await authController.login(mockReq as unknown as Request, mockRes as unknown as Response, jest.fn());
+      await authController.login(
+        mockReq as unknown as Request,
+        mockRes as unknown as Response,
+        jest.fn(),
+      );
       expect(mockRes.json).toHaveBeenCalled();
     });
 
     it("should return 401 on invalid credentials", async () => {
       const { UnauthorizedError } = require("../../utils/errors");
-      (authService.login as jest.Mock).mockRejectedValue(new UnauthorizedError("Invalid credentials"));
+      (authService.login as jest.Mock).mockRejectedValue(
+        new UnauthorizedError("Invalid credentials"),
+      );
       (handleError as jest.Mock).mockImplementation((error, res) => {
         res.status(error.statusCode).json({ message: error.message });
       });
 
-      await authController.login(mockReq as unknown as Request, mockRes as unknown as Response, jest.fn());
+      await authController.login(
+        mockReq as unknown as Request,
+        mockRes as unknown as Response,
+        jest.fn(),
+      );
       expect(handleError).toHaveBeenCalled();
     });
   });
@@ -95,31 +115,47 @@ describe("Auth Controller", () => {
         email: "test@example.com",
       });
 
-      await authController.getProfile(mockReq as unknown as Request, mockRes as unknown as Response, jest.fn());
+      await authController.getProfile(
+        mockReq as unknown as Request,
+        mockRes as unknown as Response,
+        jest.fn(),
+      );
       expect(mockRes.json).toHaveBeenCalled();
     });
 
     it("should return 404 on NotFoundError", async () => {
       const { NotFoundError } = require("../../utils/errors");
       mockReq.user = { id: 1 };
-      (authService.getProfile as jest.Mock).mockRejectedValue(new NotFoundError("User not found"));
+      (authService.getProfile as jest.Mock).mockRejectedValue(
+        new NotFoundError("User not found"),
+      );
       (handleError as jest.Mock).mockImplementation((error, res) => {
         res.status(error.statusCode).json({ message: error.message });
       });
 
-      await authController.getProfile(mockReq as unknown as Request, mockRes as unknown as Response, jest.fn());
+      await authController.getProfile(
+        mockReq as unknown as Request,
+        mockRes as unknown as Response,
+        jest.fn(),
+      );
       expect(handleError).toHaveBeenCalled();
     });
   });
 
   describe("logout", () => {
     it("should clear cookie and return 200", () => {
-      authController.logout(mockReq as unknown as Request, mockRes as unknown as Response);
-      expect(mockRes.clearCookie).toHaveBeenCalledWith("token", expect.objectContaining({
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-      }));
+      authController.logout(
+        mockReq as unknown as Request,
+        mockRes as unknown as Response,
+      );
+      expect(mockRes.clearCookie).toHaveBeenCalledWith(
+        "token",
+        expect.objectContaining({
+          httpOnly: true,
+          secure: false,
+          sameSite: "lax",
+        }),
+      );
       expect(mockRes.status).toHaveBeenCalledWith(200);
       expect(mockRes.json).toHaveBeenCalledWith({ message: "Logged out" });
     });

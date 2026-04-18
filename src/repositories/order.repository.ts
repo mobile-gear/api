@@ -43,7 +43,10 @@ const getAll = async (options: OrderQuery = {}) => {
 
   const { count, rows: orders } = await Order.findAndCountAll({
     where,
-    include: [{ model: CartItem, as: "items" }, { model: ShippingAddress, as: "shippingAddress" }],
+    include: [
+      { model: CartItem, as: "items" },
+      { model: ShippingAddress, as: "shippingAddress" },
+    ],
     limit: itemsPerPage,
     offset: offset,
     order: [[validSortBy, sortOrder]],

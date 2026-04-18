@@ -72,12 +72,20 @@ describe("Cache Service", () => {
   describe("set", () => {
     it("should set value in cache", async () => {
       await cacheService.set("key1", { id: 1, name: "test" });
-      expect(mockRedis.setex).toHaveBeenCalledWith("key1", 3600, JSON.stringify({ id: 1, name: "test" }));
+      expect(mockRedis.setex).toHaveBeenCalledWith(
+        "key1",
+        3600,
+        JSON.stringify({ id: 1, name: "test" }),
+      );
     });
 
     it("should use custom TTL", async () => {
       await cacheService.set("key1", { id: 1 }, 7200);
-      expect(mockRedis.setex).toHaveBeenCalledWith("key1", 7200, JSON.stringify({ id: 1 }));
+      expect(mockRedis.setex).toHaveBeenCalledWith(
+        "key1",
+        7200,
+        JSON.stringify({ id: 1 }),
+      );
     });
 
     it("should do nothing if redis disabled", async () => {

@@ -10,17 +10,20 @@ class RedisClient {
     if (!this.enabled) return null;
 
     if (!this.instance) {
-      this.instance = new Redis(process.env.REDIS_URL || "redis://localhost:6379", {
-        retryStrategy: (times) => {
-          if (times > 3) {
-            console.error("Redis retry limit exceeded");
-            return null;
-          }
-          return Math.min(times * 50, 2000);
+      this.instance = new Redis(
+        process.env.REDIS_URL || "redis://localhost:6379",
+        {
+          retryStrategy: (times) => {
+            if (times > 3) {
+              console.error("Redis retry limit exceeded");
+              return null;
+            }
+            return Math.min(times * 50, 2000);
+          },
+          lazyConnect: true,
+          maxRetriesPerRequest: 3,
         },
-        lazyConnect: true,
-        maxRetriesPerRequest: 3,
-      });
+      );
 
       this.instance.on("error", (err) => {
         console.error("Redis error:", err);

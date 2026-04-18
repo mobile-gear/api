@@ -10,7 +10,9 @@ import userRepository from "../repositories/user.repository";
 import userCache from "../cache/strategies/user.cache";
 
 const getUserWithoutPassword = (user: User) => {
-  const { password, ...userWithoutPassword } = user.get({ plain: true }) as User;
+  const { password, ...userWithoutPassword } = user.get({
+    plain: true,
+  }) as User;
   return userWithoutPassword;
 };
 
@@ -18,7 +20,8 @@ const register = async (userData: User) => {
   const { email, password, firstName, lastName } = userData;
 
   const existingUser = await userRepository.getOne({ email });
-  if (existingUser) throw new BadRequestError("An account with this email already exists.");
+  if (existingUser)
+    throw new BadRequestError("An account with this email already exists.");
 
   const saltRounds = 10;
   const hashedPassword = await bcrypt.hash(password, saltRounds);

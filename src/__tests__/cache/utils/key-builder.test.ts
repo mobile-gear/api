@@ -32,7 +32,11 @@ describe("Key Builder", () => {
     });
 
     it("should build collection key filtering undefined values", () => {
-      const key = keyBuilder.collection("products", { page: 1, limit: undefined, category: "electronics" });
+      const key = keyBuilder.collection("products", {
+        page: 1,
+        limit: undefined,
+        category: "electronics",
+      });
       expect(key).toContain("page:1");
       expect(key).toContain("category:electronics");
       expect(key).not.toContain("limit");

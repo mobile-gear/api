@@ -5,4 +5,4 @@ export const SortOrder = {
   DESC: "desc",
 } as const;
 
-export type SortOrder = typeof SortOrder[keyof typeof SortOrder];
+export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];

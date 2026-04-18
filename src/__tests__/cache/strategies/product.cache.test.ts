@@ -69,14 +69,18 @@ describe("Product Cache Strategy", () => {
         ["test:product:id:1:v1", { id: 1, name: "Product 1" }],
         ["test:product:id:2:v1", { id: 2, name: "Product 2" }],
       ]);
-      (CacheService.prototype.getMultiple as jest.Mock).mockResolvedValue(mockMap);
+      (CacheService.prototype.getMultiple as jest.Mock).mockResolvedValue(
+        mockMap,
+      );
 
       const result = await productCache.getBulk([1, 2]);
       expect(result.size).toBe(2);
     });
 
     it("should return empty map if no products", async () => {
-      (CacheService.prototype.getMultiple as jest.Mock).mockResolvedValue(new Map());
+      (CacheService.prototype.getMultiple as jest.Mock).mockResolvedValue(
+        new Map(),
+      );
 
       const result = await productCache.getBulk([]);
       expect(result.size).toBe(0);
@@ -89,7 +93,9 @@ describe("Product Cache Strategy", () => {
         [1, { id: 1, name: "Product 1" }],
         [2, { id: 2, name: "Product 2" }],
       ]);
-      (CacheService.prototype.setMultiple as jest.Mock).mockResolvedValue(undefined);
+      (CacheService.prototype.setMultiple as jest.Mock).mockResolvedValue(
+        undefined,
+      );
 
       await productCache.setBulk(products as never);
       expect(CacheService.prototype.setMultiple).toHaveBeenCalled();
@@ -99,7 +105,9 @@ describe("Product Cache Strategy", () => {
   describe("invalidateById", () => {
     it("should invalidate product by id", async () => {
       (CacheService.prototype.delete as jest.Mock).mockResolvedValue(undefined);
-      (CacheService.prototype.deletePattern as jest.Mock).mockResolvedValue(undefined);
+      (CacheService.prototype.deletePattern as jest.Mock).mockResolvedValue(
+        undefined,
+      );
 
       await productCache.invalidateById(1);
       expect(CacheService.prototype.delete).toHaveBeenCalled();
@@ -109,7 +117,9 @@ describe("Product Cache Strategy", () => {
 
   describe("invalidateAll", () => {
     it("should invalidate all products", async () => {
-      (CacheService.prototype.deletePattern as jest.Mock).mockResolvedValue(undefined);
+      (CacheService.prototype.deletePattern as jest.Mock).mockResolvedValue(
+        undefined,
+      );
 
       await productCache.invalidateAll();
       expect(CacheService.prototype.deletePattern).toHaveBeenCalledTimes(2);

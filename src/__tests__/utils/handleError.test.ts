@@ -1,5 +1,10 @@
 import handleError from "../../utils/handleError";
-import { HttpError, BadRequestError, NotFoundError, UnauthorizedError } from "../../utils/errors";
+import {
+  HttpError,
+  BadRequestError,
+  NotFoundError,
+  UnauthorizedError,
+} from "../../utils/errors";
 import { Response, NextFunction } from "express";
 
 describe("handleError", () => {

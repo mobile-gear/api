@@ -13,5 +13,7 @@ export const registerRateLimiter = rateLimit({
   max: 5,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { message: "Too many registration attempts. Please try again later." },
+  message: {
+    message: "Too many registration attempts. Please try again later.",
+  },
 });

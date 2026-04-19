@@ -1,14 +1,14 @@
 import bcrypt from "bcryptjs";
-import User from "../models/User";
-import Product from "../models/Product";
-import Order from "../models/Order";
-import CartItem from "../models/CartItem";
-import sequelize from "../db/database";
+import User from "../src/models/User";
+import Product from "../src/models/Product";
+import Order from "../src/models/Order";
+import CartItem from "../src/models/CartItem";
+import sequelize from "../src/db/database";
 import path from "path";
 import fs from "fs";
 import { CreationAttributes } from "sequelize";
-import ShippingAddress from "../models/ShippingAddress";
-import IProduct from "../interfaces/entities/product";
+import ShippingAddress from "../src/models/ShippingAddress";
+import IProduct from "../src/interfaces/entities/product";
 
 const generateUsers = async () => {
   const users = [
@@ -32,7 +32,7 @@ const generateUsers = async () => {
 };
 
 const loadProducts = () => {
-  const productsPath = path.join(__dirname, "../db/products.json");
+  const productsPath = path.join(__dirname, "products.json");
   const productsData: IProduct[] = JSON.parse(
     fs.readFileSync(productsPath, "utf-8"),
   );

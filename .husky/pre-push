@@ -1,0 +1,12 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "Running tests and checking coverage..."
+npm run test:coverage
+
+if [ $? -ne 0 ]; then
+  echo "❌ Tests failed or coverage below 80%. Push aborted."
+  exit 1
+fi
+
+echo "✅ Tests passed and coverage is 80% or higher. Proceeding with push."

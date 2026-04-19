@@ -10,9 +10,12 @@
     "production": "node dist/server.js",
     "seed": "ts-node src/scripts/generateFakeData.ts",
     "format": "prettier --write .",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -51,6 +54,10 @@
     "@types/pg": "^8.11.11",
     "@types/react": "^19.0.10",
     "@types/supertest": "^6.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.58.2",
+    "@typescript-eslint/parser": "^8.58.2",
+    "eslint": "^10.2.1",
+    "husky": "^9.1.7",
     "prettier": "^3.3.3",
     "sqlite3": "^6.0.1",
     "ts-jest": "^29.4.9"

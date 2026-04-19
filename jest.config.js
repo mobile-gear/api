@@ -1,11 +1,24 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
-  testMatch: ["**/__tests__/**/*.ts", "**/?(*.)+(spec|test).ts"],
+  testMatch: ["**/tests/**/*.test.ts", "**/?(*.)+(spec|test).ts"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   coveragePathIgnorePatterns: ["/node_modules/", "/dist/"],
-  setupFiles: ["<rootDir>/src/mocks/setup.ts", "dotenv/config"],
+  setupFiles: ["<rootDir>/tests/setup.ts", "dotenv/config"],
   setupFilesAfterEnv: ["<rootDir>/src/test-config.ts"],
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/src/$1",
+  },
+  roots: ["<rootDir>/tests", "<rootDir>/src"],
+  transform: {
+    "^.+\\.ts$": [
+      "ts-jest",
+      {
+        tsconfig: "tsconfig.json",
+        useESM: false,
+      },
+    ],
+  },
   collectCoverageFrom: [
     "src/**/*.ts",
     "!src/**/*.d.ts",

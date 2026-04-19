@@ -13,6 +13,7 @@ const getUserWithoutPassword = (user: User) => {
   const { password, ...userWithoutPassword } = user.get({
     plain: true,
   }) as User;
+  void password;
   return userWithoutPassword;
 };
 

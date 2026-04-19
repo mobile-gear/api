@@ -1,6 +1,7 @@
 import authService from "@/services/auth.service";
 import userRepository from "@/repositories/user.repository";
 import userCache from "@/cache/strategies/user.cache";
+import bcrypt from "bcryptjs";
 import {
   BadRequestError,
   NotFoundError,
@@ -9,6 +10,13 @@ import {
 
 jest.mock("@/repositories/user.repository");
 jest.mock("@/cache/strategies/user.cache");
+jest.mock("bcryptjs", () => ({
+  __esModule: true,
+  default: {
+    hash: jest.fn().mockResolvedValue("hashed_password"),
+    compare: jest.fn().mockResolvedValue(true),
+  },
+}));
 
 describe("Auth Service", () => {
   beforeEach(() => {
@@ -45,8 +53,6 @@ describe("Auth Service", () => {
       };
       (userRepository.getOne as jest.Mock).mockResolvedValue(null);
       (userRepository.createOne as jest.Mock).mockResolvedValue(newUser);
-      const bcrypt = require("bcryptjs");
-      bcrypt.hash = jest.fn().mockResolvedValue("hashed_password");
 
       const result = await authService.register(userData as never);
       expect(result).toHaveProperty("token");
@@ -95,8 +101,6 @@ describe("Auth Service", () => {
       };
       (userRepository.getOne as jest.Mock).mockResolvedValue(null);
       (userRepository.createOne as jest.Mock).mockResolvedValue(newUser);
-      const bcrypt = require("bcryptjs");
-      bcrypt.hash = jest.fn().mockResolvedValue("hashed_password");
 
       const result = await authService.register(userData as never);
       expect(result).toHaveProperty("token");
@@ -115,8 +119,6 @@ describe("Auth Service", () => {
         }),
       };
       (userRepository.getOne as jest.Mock).mockResolvedValue(user);
-      const bcrypt = require("bcryptjs");
-      bcrypt.compare = jest.fn().mockResolvedValue(true);
 
       const result = await authService.login("test@example.com", "password123");
       expect(result).toHaveProperty("token");
@@ -142,8 +144,7 @@ describe("Auth Service", () => {
         }),
       };
       (userRepository.getOne as jest.Mock).mockResolvedValue(user);
-      const bcrypt = require("bcryptjs");
-      bcrypt.compare = jest.fn().mockResolvedValue(false);
+      (bcrypt.compare as jest.Mock).mockResolvedValueOnce(false);
 
       await expect(
         authService.login("test@example.com", "wrongpassword"),
@@ -162,8 +163,6 @@ describe("Auth Service", () => {
         }),
       };
       (userRepository.getOne as jest.Mock).mockResolvedValue(user);
-      const bcrypt = require("bcryptjs");
-      bcrypt.compare = jest.fn().mockResolvedValue(true);
 
       const result = await authService.login("test@example.com", "password123");
       expect(result).toHaveProperty("token");

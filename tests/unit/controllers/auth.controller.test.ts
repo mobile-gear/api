@@ -1,6 +1,6 @@
 import * as authController from "@/controllers/auth.controller";
 import authService from "@/services/auth.service";
-import { BadRequestError } from "@/utils/errors";
+import { BadRequestError, UnauthorizedError, NotFoundError } from "@/utils/errors";
 import handleError from "@/utils/handleError";
 import { Request, Response } from "express";
 
@@ -90,7 +90,6 @@ describe("Auth Controller", () => {
     });
 
     it("should return 401 on invalid credentials", async () => {
-      const { UnauthorizedError } = require("@/utils/errors");
       (authService.login as jest.Mock).mockRejectedValue(
         new UnauthorizedError("Invalid credentials"),
       );
@@ -124,7 +123,6 @@ describe("Auth Controller", () => {
     });
 
     it("should return 404 on NotFoundError", async () => {
-      const { NotFoundError } = require("@/utils/errors");
       mockReq.user = { id: 1 };
       (authService.getProfile as jest.Mock).mockRejectedValue(
         new NotFoundError("User not found"),

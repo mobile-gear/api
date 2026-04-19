@@ -1,6 +1,6 @@
 import * as orderController from "@/controllers/order.controller";
 import orderService from "@/services/order.service";
-import { NotFoundError, UnauthorizedError } from "@/utils/errors";
+import { NotFoundError, UnauthorizedError, BadRequestError } from "@/utils/errors";
 import { Request, Response } from "express";
 
 jest.mock("@/services/order.service");
@@ -118,7 +118,6 @@ describe("Order Controller", () => {
     });
 
     it("should return 400 on BadRequestError", async () => {
-      const { BadRequestError } = require("@/utils/errors");
       (orderService.createOrder as jest.Mock).mockRejectedValue(
         new BadRequestError("Invalid order data"),
       );

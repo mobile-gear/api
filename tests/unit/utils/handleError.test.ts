@@ -1,6 +1,5 @@
 import handleError from "@/utils/handleError";
 import {
-  HttpError,
   BadRequestError,
   NotFoundError,
   UnauthorizedError,
